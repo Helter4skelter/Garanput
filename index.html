@@ -3,265 +3,657 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistem Manajemen Garansi & Bonus Pelanggan</title>
+  <title>reztroid® - Garansi & Bonus Management Dashboard</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              purple: '#6d4df6',
+              purpleDark: '#5635e8',
+              lime: '#bdf529',
+              limeHover: '#a7e31b',
+              lightPurple: '#f4f0ff',
+              pillPurple: '#ece5ff',
+              pillText: '#6845f5'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #f7f9fc;
+    }
+    /* Custom scrollbar halus */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    .hero-gradient {
+      background: linear-gradient(135deg, #7451f8 0%, #5d36f5 60%, #4b23e8 100%);
+      box-shadow: 0 20px 40px -15px rgba(109, 77, 246, 0.45);
+    }
+    .neon-btn {
+      background-color: #bef724;
+      color: #0d0f12;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .neon-btn:hover {
+      background-color: #abeb0c;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px -4px rgba(190, 247, 36, 0.5);
+    }
+    .neon-btn:active {
+      transform: translateY(0);
+    }
+  </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen p-4 md:p-8">
-  <div class="max-w-6xl mx-auto space-y-6">
+<body class="font-sans text-slate-800 antialiased min-h-screen pb-16">
+
+  <!-- Main Container Wrapper mirip tampilan Chrome Window -->
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 pt-5">
     
-    <!-- Header -->
-    <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-800 pb-4">
-      <div>
-        <h1 class="text-2xl font-bold tracking-tight">Manajemen Klaim Garansi & Bonus</h1>
-        <p class="text-sm text-slate-400">Pantau progres garansi, reminder klaim berjalan, dan distribusi bonus pelanggan.</p>
+    <!-- Top Navigation Header -->
+    <header class="bg-white rounded-2xl px-5 py-3.5 mb-5 flex items-center justify-between shadow-sm border border-slate-100">
+      <!-- Logo & Subtitle Badge -->
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-brand-purple flex items-center justify-center text-white font-black text-xl shadow-md shadow-brand-purple/30">
+          R
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-xl font-extrabold text-slate-900 tracking-tight">reztroid<span class="text-xs text-slate-400 font-normal ml-0.5">®</span></span>
+          <span class="bg-brand-pillPurple text-brand-pillText text-[10px] font-bold px-2.5 py-0.5 rounded-full tracking-wider uppercase">
+            ADMIN DASHBOARD
+          </span>
+        </div>
       </div>
-      <button onclick="requestNotificationPermission()" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-2 rounded-lg border border-slate-700 transition">
-        🔔 Aktifkan Notifikasi Browser
-      </button>
+
+      <!-- Actions -->
+      <div class="flex items-center gap-2">
+        <button onclick="handleRefresh()" class="flex items-center gap-1.5 bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300 font-semibold text-xs px-3.5 py-2 rounded-xl transition shadow-xs">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+          Refresh
+        </button>
+      </div>
     </header>
 
-    <!-- Reminder Banner -->
-    <div id="reminderBox" class="hidden bg-amber-500/10 border border-amber-500/30 rounded-xl p-4">
-      <div class="flex items-center gap-2 font-semibold text-amber-400 mb-2">
-        <span>⚠️ Perhatian: Klaim Menunggu Tindakan / Jatuh Tempo Hari Ini</span>
-      </div>
-      <ul id="reminderList" class="text-xs text-amber-200/90 space-y-1 list-disc list-inside"></ul>
-    </div>
+    <!-- Main Hero Banner (Identik dengan Screenshot) -->
+    <div class="hero-gradient rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden mb-7">
+      
+      <!-- Subtle Background Glow Element -->
+      <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
 
-    <!-- Form Input -->
-    <div class="bg-slate-800/80 border border-slate-700 rounded-xl p-5 shadow-lg">
-      <h2 class="text-lg font-semibold mb-4 text-slate-200">Tambah Data Pelanggan Baru</h2>
-      <form id="claimForm" onsubmit="handleFormSubmit(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div>
-          <label class="block text-xs text-slate-400 mb-1">Nama Customer</label>
-          <input type="text" id="custName" required placeholder="Contoh: Budi Santoso" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
-        </div>
-        <div>
-          <label class="block text-xs text-slate-400 mb-1">Kontak (WhatsApp / HP)</label>
-          <input type="text" id="custContact" required placeholder="Contoh: 08123456789" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
-        </div>
-        <div>
-          <label class="block text-xs text-slate-400 mb-1">Produk / Layanan</label>
-          <input type="text" id="productName" required placeholder="Contoh: Langganan Akun 1 Bulan" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
-        </div>
-
-        <div>
-          <label class="block text-xs text-slate-400 mb-1">Status Garansi</label>
-          <select id="warrantyStatus" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
-            <option value="Dalam Proses">⏳ Dalam Proses</option>
-            <option value="Menunggu Sparepart/Data">📦 Menunggu Data / Sparepart</option>
-            <option value="Selesai">✅ Selesai / Siap Kirim</option>
-            <option value="Ditolak">❌ Ditolak</option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-xs text-slate-400 mb-1">Target Tanggal Selesai (Reminder)</label>
-          <input type="date" id="dueDate" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
-        </div>
-        <div>
-          <label class="block text-xs text-slate-400 mb-1">Status Bonus Pelanggan</label>
-          <select id="hasBonus" onchange="toggleBonusInput(this.value)" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
-            <option value="Tidak">Tidak Ada Bonus</option>
-            <option value="Ya">Dapat Bonus</option>
-          </select>
-        </div>
-
-        <div id="bonusDetailWrapper" class="hidden md:col-span-2">
-          <label class="block text-xs text-slate-400 mb-1">Rincian Bonus</label>
-          <input type="text" id="bonusDetail" placeholder="Contoh: Voucher Diskon 20% / Tambahan 3 Hari Aktif" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
-        </div>
-        <div class="md:col-span-3">
-          <label class="block text-xs text-slate-400 mb-1">Catatan Tambahan (Opsional)</label>
-          <input type="text" id="notes" placeholder="Detail kendala atau akun klaim" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
-        </div>
-
-        <div class="md:col-span-3 flex justify-end">
-          <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm px-5 py-2.5 rounded-lg transition shadow-md">
-            Simpan Data
-          </button>
-        </div>
-      </form>
-    </div>
-
-    <!-- Filter & Tabel Data -->
-    <div class="bg-slate-800/80 border border-slate-700 rounded-xl p-5 shadow-lg space-y-4">
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-        <h2 class="text-lg font-semibold text-slate-200">Daftar Garansi & Bonus</h2>
-        <div class="flex flex-wrap gap-2">
-          <select id="filterStatus" onchange="renderTable()" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-300">
-            <option value="Semua">Semua Status Garansi</option>
-            <option value="Dalam Proses">Dalam Proses</option>
-            <option value="Menunggu Sparepart/Data">Menunggu Data</option>
-            <option value="Selesai">Selesai</option>
-            <option value="Ditolak">Ditolak</option>
-          </select>
-          <select id="filterBonus" onchange="renderTable()" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-300">
-            <option value="Semua">Semua Customer</option>
-            <option value="Ya">Hanya Penerima Bonus</option>
-          </select>
-        </div>
+      <!-- Pill Badge Top Left -->
+      <div class="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-md border border-white/25 px-3 py-1 rounded-full text-xs font-semibold text-white/95 mb-4">
+        <span>🛡️</span>
+        <span class="tracking-wide uppercase text-[11px]">MANAJEMEN GARANSI & BONUS</span>
       </div>
 
-      <div class="overflow-x-auto">
-        <table class="w-full text-left text-sm border-collapse">
-          <thead>
-            <tr class="border-b border-slate-700 text-slate-400 text-xs uppercase bg-slate-900/50">
-              <th class="py-3 px-3">Customer</th>
-              <th class="py-3 px-3">Produk & Detail</th>
-              <th class="py-3 px-3">Status Garansi</th>
-              <th class="py-3 px-3">Jatuh Tempo</th>
-              <th class="py-3 px-3">Bonus</th>
-              <th class="py-3 px-3 text-center">Aksi</th>
-            </tr>
-          </thead>
-          <tbody id="dataTableBody" class="divide-y divide-slate-800 text-slate-300 text-xs md:text-sm"></tbody>
-        </table>
+      <!-- Headline -->
+      <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight mb-2">
+        Pantau Garansi, Pengingat &amp; Bonus Aktif.
+      </h1>
+      <p class="text-xs sm:text-sm text-purple-100/90 max-w-xl mb-6 font-normal">
+        Kelola klaim garansi dalam proses, follow-up WhatsApp terjadwal, dan pencatatan riwayat bonus loyalitas customer secara real-time.
+      </p>
+
+      <!-- Primary Action CTA Button (Lime Button Khas Reztroid) -->
+      <button onclick="openModal()" class="w-full neon-btn font-extrabold text-sm sm:text-base py-3.5 px-6 rounded-2xl flex items-center justify-center gap-2 mb-6 cursor-pointer">
+        <span class="text-lg leading-none">+</span>
+        <span>Tambah Garansi / Bonus</span>
+      </button>
+
+      <!-- Metrics Summary Sub-card -->
+      <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-5 border border-white/20 grid grid-cols-2 sm:grid-cols-4 gap-4 divide-y sm:divide-y-0 sm:divide-x divide-white/15">
+        <div class="pt-2 sm:pt-0">
+          <p class="text-[10px] uppercase font-bold tracking-wider text-purple-200 mb-1">DALAM PROSES</p>
+          <div class="flex items-baseline gap-1.5">
+            <span id="statInProcess" class="text-xl sm:text-2xl font-black text-white">0</span>
+            <span class="text-[11px] text-purple-200">Klaim</span>
+          </div>
+        </div>
+
+        <div class="pt-2 sm:pt-0 sm:pl-4">
+          <p class="text-[10px] uppercase font-bold tracking-wider text-amber-200 mb-1">PERLU TINDAKAN</p>
+          <div class="flex items-baseline gap-1.5">
+            <span id="statUrgent" class="text-xl sm:text-2xl font-black text-amber-300">0</span>
+            <span class="text-[11px] text-amber-100">Klaim</span>
+          </div>
+        </div>
+
+        <div class="pt-2 sm:pt-0 sm:pl-4">
+          <p class="text-[10px] uppercase font-bold tracking-wider text-lime-200 mb-1">TOTAL BONUS</p>
+          <div class="flex items-baseline gap-1.5">
+            <span id="statBonusCount" class="text-xl sm:text-2xl font-black text-[#bef724]">0</span>
+            <span class="text-[11px] text-lime-200">Customer</span>
+          </div>
+        </div>
+
+        <div class="pt-2 sm:pt-0 sm:pl-4">
+          <p class="text-[10px] uppercase font-bold tracking-wider text-purple-200 mb-1">SELESAI</p>
+          <div class="flex items-baseline gap-1.5">
+            <span id="statDone" class="text-xl sm:text-2xl font-black text-white">0</span>
+            <span class="text-[11px] text-purple-200">Klaim</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section: Reminder H-1 & Hari Ini (Identik dengan Card Section Daftar Pelanggan H-2) -->
+    <div class="mb-7">
+      <div class="flex items-center gap-2 mb-3">
+        <h2 class="text-lg font-bold text-slate-900 tracking-tight">Daftar Pengingat Garansi (H-1 &amp; Hari Ini)</h2>
+      </div>
+      <div class="flex items-center gap-2 text-xs text-slate-500 mb-3">
+        <span>Perlu Diingatkan:</span>
+        <span id="reminderCountBadge" class="bg-purple-100 text-brand-purple font-bold px-2 py-0.5 rounded-full text-xs">
+          0
+        </span>
+        <span>Pelanggan</span>
+      </div>
+
+      <!-- Container Pengingat Dinamis -->
+      <div id="reminderContainer" class="space-y-3">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- Section: Daftar & Filter Lengkap -->
+    <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-100">
+      
+      <!-- Top Bar: Filter & Search -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-5 pb-4 border-b border-slate-100">
+        <div>
+          <h3 class="font-extrabold text-slate-900 text-base">Semua Catatan Garansi &amp; Bonus</h3>
+          <p class="text-xs text-slate-400">Pilih status untuk menyaring atau cari berdasarkan nama/nomor HP.</p>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="relative w-full md:w-64">
+          <input 
+            type="text" 
+            id="searchInput" 
+            oninput="renderData()" 
+            placeholder="Cari nama atau produk..."
+            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 pl-9 text-xs text-slate-800 focus:outline-none focus:border-brand-purple focus:ring-1 focus:ring-brand-purple transition"
+          >
+          <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-3 mb-4 text-xs font-semibold no-scrollbar">
+        <button onclick="setTabFilter('ALL')" id="tab-ALL" class="tab-btn px-3 py-1.5 rounded-xl transition bg-slate-900 text-white whitespace-nowrap">Semua Status</button>
+        <button onclick="setTabFilter('PROSES')" id="tab-PROSES" class="tab-btn px-3 py-1.5 rounded-xl transition bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">⏳ Dalam Proses</button>
+        <button onclick="setTabFilter('MENUNGGU')" id="tab-MENUNGGU" class="tab-btn px-3 py-1.5 rounded-xl transition bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">📦 Menunggu Data</button>
+        <button onclick="setTabFilter('BONUS')" id="tab-BONUS" class="tab-btn px-3 py-1.5 rounded-xl transition bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">🎁 Dapat Bonus</button>
+        <button onclick="setTabFilter('SELESAI')" id="tab-SELESAI" class="tab-btn px-3 py-1.5 rounded-xl transition bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">✅ Selesai</button>
+      </div>
+
+      <!-- List Item Card / Table Container -->
+      <div id="dataCardList" class="space-y-3">
+        <!-- Render via JS -->
       </div>
     </div>
   </div>
 
-  <script>
-    let records = JSON.parse(localStorage.getItem('warranty_records')) || [];
+  <!-- MODAL: Tambah Garansi & Bonus -->
+  <div id="modalOverlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs hidden items-center justify-center p-4 z-50 transition-opacity">
+    <div class="bg-white rounded-3xl w-full max-w-lg p-6 shadow-2xl border border-slate-100 transform transition-all">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
+        <div>
+          <h4 class="font-black text-slate-900 text-lg">Input Garansi &amp; Bonus</h4>
+          <p class="text-xs text-slate-400">Tambahkan informasi klaim dan bonus hadiah customer.</p>
+        </div>
+        <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 font-bold transition">
+          ✕
+        </button>
+      </div>
 
-    function toggleBonusInput(val) {
-      const wrapper = document.getElementById('bonusDetailWrapper');
-      if (val === 'Ya') {
-        wrapper.classList.remove('hidden');
+      <form id="addForm" onsubmit="handleFormSubmit(event)" class="space-y-3.5">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Nama Customer <span class="text-rose-500">*</span></label>
+          <input type="text" id="inputName" required placeholder="Contoh: Andi Pratama" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple outline-none">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">WhatsApp / No HP <span class="text-rose-500">*</span></label>
+            <input type="text" id="inputPhone" required placeholder="08xxxxxxxxxx" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Produk / Layanan <span class="text-rose-500">*</span></label>
+            <input type="text" id="inputProduct" required placeholder="Contoh: Netflix 1 Bulan" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple outline-none">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Status Garansi</label>
+            <select id="inputStatus" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-semibold focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple outline-none">
+              <option value="Dalam Proses">⏳ Dalam Proses</option>
+              <option value="Menunggu Data/Akun">📦 Menunggu Data / Akun</option>
+              <option value="Selesai">✅ Selesai</option>
+              <option value="Ditolak">❌ Ditolak / Hangus</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Target Selesai / Jatuh Tempo <span class="text-rose-500">*</span></label>
+            <input type="date" id="inputDueDate" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-medium focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple outline-none">
+          </div>
+        </div>
+
+        <!-- Toggle Bonus -->
+        <div class="bg-purple-50/70 border border-purple-100 rounded-2xl p-3.5 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="text-base">🎁</span>
+              <div>
+                <p class="text-xs font-bold text-slate-800">Dapat Bonus Customer?</p>
+                <p class="text-[11px] text-slate-500">Berikan reward atau kompensasi garansi</p>
+              </div>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="inputHasBonus" onchange="toggleBonusField()" class="sr-only peer">
+              <div class="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-purple"></div>
+            </label>
+          </div>
+
+          <div id="bonusDetailContainer" class="hidden pt-1">
+            <label class="block text-[11px] font-bold text-brand-purpleDark mb-1">Rincian Bonus Apa yang Diberikan?</label>
+            <input type="text" id="inputBonusDetail" placeholder="Misal: Tambahan +5 Hari Aktif / Diskon 20% Next Order" class="w-full bg-white border border-purple-200 rounded-xl px-3 py-1.5 text-xs focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1">Catatan Kendala / Detail Klaim</label>
+          <textarea id="inputNotes" rows="2" placeholder="Akun mengalami screen limit / kendala password salah" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple outline-none"></textarea>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="pt-2">
+          <button type="submit" class="w-full neon-btn font-extrabold text-xs sm:text-sm py-3 rounded-xl shadow-md flex items-center justify-center gap-2">
+            <span>Simpan Data</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 bg-slate-900 text-white text-xs px-4 py-2.5 rounded-xl shadow-lg border border-slate-700 transition-all transform translate-y-20 opacity-0 pointer-events-none flex items-center gap-2">
+    <span id="toastMsg">Data berhasil diperbarui</span>
+  </div>
+
+  <script>
+    // Inisialisasi Data Awal (Sample Realistis)
+    const initialSampleData = [
+      {
+        id: 1730000000001,
+        name: "Kevin Sanjaya",
+        phone: "081234567890",
+        product: "Canva Pro 1 Tahun",
+        status: "Dalam Proses",
+        dueDate: getFormattedDateOffset(0), // Hari ini
+        hasBonus: true,
+        bonusDetail: "Free Akun Prime Video 1 Bulan",
+        notes: "Tim sedang melakukan re-invite member baru."
+      },
+      {
+        id: 1730000000002,
+        name: "Siti Rahmawati",
+        phone: "085712349988",
+        product: "YouTube Premium 4 Bulan",
+        status: "Menunggu Data/Akun",
+        dueDate: getFormattedDateOffset(1), // H-1 (Besok)
+        hasBonus: false,
+        bonusDetail: "",
+        notes: "Menunggu email akun dari customer."
+      },
+      {
+        id: 1730000000003,
+        name: "Farhan Maulana",
+        phone: "087899001122",
+        product: "Spotify Family Member",
+        status: "Selesai",
+        dueDate: getFormattedDateOffset(-2),
+        hasBonus: true,
+        bonusDetail: "Voucher Diskon Rp 10.000",
+        notes: "Sudah di-invite kembali ke address baru."
+      }
+    ];
+
+    let items = JSON.parse(localStorage.getItem('reztroid_garansi_records')) || initialSampleData;
+    let currentTab = 'ALL';
+
+    function getFormattedDateOffset(dayOffset) {
+      const d = new Date();
+      d.setDate(d.getDate() + dayOffset);
+      return d.toISOString().split('T')[0];
+    }
+
+    function saveState() {
+      localStorage.setItem('reztroid_garansi_records', JSON.stringify(items));
+      calculateMetrics();
+      renderReminders();
+      renderData();
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMsg');
+      toastMsg.innerText = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+      }, 2500);
+    }
+
+    function handleRefresh() {
+      showToast("🔄 Data dashboard disinkronkan");
+      calculateMetrics();
+      renderReminders();
+      renderData();
+    }
+
+    // Modal Control
+    function openModal() {
+      document.getElementById('modalOverlay').classList.remove('hidden');
+      document.getElementById('modalOverlay').classList.add('flex');
+      // Set default target date: hari ini
+      document.getElementById('inputDueDate').value = getFormattedDateOffset(0);
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.add('hidden');
+      document.getElementById('modalOverlay').classList.remove('flex');
+      document.getElementById('addForm').reset();
+      document.getElementById('bonusDetailContainer').classList.add('hidden');
+    }
+
+    function toggleBonusField() {
+      const isChecked = document.getElementById('inputHasBonus').checked;
+      const container = document.getElementById('bonusDetailContainer');
+      if (isChecked) {
+        container.classList.remove('hidden');
+        document.getElementById('inputBonusDetail').focus();
       } else {
-        wrapper.classList.add('hidden');
-        document.getElementById('bonusDetail').value = '';
+        container.classList.add('hidden');
+        document.getElementById('inputBonusDetail').value = '';
       }
     }
 
     function handleFormSubmit(e) {
       e.preventDefault();
-      const hasBonus = document.getElementById('hasBonus').value;
-      const newEntry = {
+      const hasBonus = document.getElementById('inputHasBonus').checked;
+      const bonusDetail = document.getElementById('inputBonusDetail').value.trim();
+
+      const newItem = {
         id: Date.now(),
-        name: document.getElementById('custName').value.trim(),
-        contact: document.getElementById('custContact').value.trim(),
-        product: document.getElementById('productName').value.trim(),
-        status: document.getElementById('warrantyStatus').value,
-        dueDate: document.getElementById('dueDate').value,
+        name: document.getElementById('inputName').value.trim(),
+        phone: document.getElementById('inputPhone').value.trim(),
+        product: document.getElementById('inputProduct').value.trim(),
+        status: document.getElementById('inputStatus').value,
+        dueDate: document.getElementById('inputDueDate').value,
         hasBonus: hasBonus,
-        bonusDetail: hasBonus === 'Ya' ? document.getElementById('bonusDetail').value.trim() : '-',
-        notes: document.getElementById('notes').value.trim() || '-'
+        bonusDetail: hasBonus ? (bonusDetail || "Bonus Reward") : "",
+        notes: document.getElementById('inputNotes').value.trim() || "-"
       };
 
-      records.unshift(newEntry);
-      saveData();
-      document.getElementById('claimForm').reset();
-      toggleBonusInput('Tidak');
-      renderTable();
-      checkReminders();
+      items.unshift(newItem);
+      saveState();
+      closeModal();
+      showToast("✅ Berhasil menambahkan klaim baru!");
     }
 
-    function updateStatus(id, newStatus) {
-      records = records.map(item => item.id === id ? { ...item, status: newStatus } : item);
-      saveData();
-      renderTable();
-      checkReminders();
+    function updateItemStatus(id, newStatus) {
+      items = items.map(item => item.id === id ? { ...item, status: newStatus } : item);
+      saveState();
+      showToast("Status garansi berhasil diubah");
     }
 
-    function deleteRecord(id) {
-      if (confirm('Hapus data pelanggan ini?')) {
-        records = records.filter(item => item.id !== id);
-        saveData();
-        renderTable();
-        checkReminders();
+    function deleteItem(id) {
+      const item = items.find(i => i.id === id);
+      if (item && confirm(`Hapus catatan garansi customer: ${item.name}?`)) {
+        items = items.filter(i => i.id !== id);
+        saveState();
+        showToast("🗑️ Data berhasil dihapus");
       }
     }
 
-    function saveData() {
-      localStorage.setItem('warranty_records', JSON.stringify(records));
-    }
+    function sendWhatsApp(id) {
+      const item = items.find(i => i.id === id);
+      if (!item) return;
 
-    function checkReminders() {
-      const today = new Date().toISOString().split('T')[0];
-      const urgentClaims = records.filter(item => item.status !== 'Selesai' && item.status !== 'Ditolak' && item.dueDate <= today);
-      const reminderBox = document.getElementById('reminderBox');
-      const reminderList = document.getElementById('reminderList');
-
-      if (urgentClaims.length > 0) {
-        reminderList.innerHTML = urgentClaims.map(c => 
-          `<li><strong>${c.name}</strong> (${c.product}) - Batas Target: ${c.dueDate} [Status: ${c.status}]</li>`
-        ).join('');
-        reminderBox.classList.remove('hidden');
-      } else {
-        reminderBox.classList.add('hidden');
+      let cleanPhone = item.phone.replace(/[^0-9]/g, '');
+      if (cleanPhone.startsWith('0')) {
+        cleanPhone = '62' + cleanPhone.slice(1);
       }
+
+      let bonusText = item.hasBonus 
+        ? `%0A🎁 *Bonus Spesial Untuk Kamu:* ${item.bonusDetail}` 
+        : '';
+
+      const text = `Halo Kak *${encodeURIComponent(item.name)}*, salam dari *reztroid*!%0A%0AUpdate status garansi produk *${encodeURIComponent(item.product)}* saat ini: *${encodeURIComponent(item.status)}*.%0ACatatan: ${encodeURIComponent(item.notes)}${bonusText}%0A%0ATerima kasih sudah bersabar menunggu ya! 🙏`;
+      
+      window.open(`https://wa.me/${cleanPhone}?text=${text}`, '_blank');
     }
 
-    function requestNotificationPermission() {
-      if ('Notification' in window) {
-        Notification.requestPermission().then(permission => {
-          if (permission === 'granted') {
-            alert('Notifikasi aktif! Pengingat otomatis akan muncul saat target garansi jatuh tempo.');
-          }
-        });
-      }
+    // Perhitungan Statistik Hero Card
+    function calculateMetrics() {
+      const inProcess = items.filter(i => i.status === 'Dalam Proses').length;
+      const done = items.filter(i => i.status === 'Selesai').length;
+      const bonusCount = items.filter(i => i.hasBonus).length;
+
+      const today = getFormattedDateOffset(0);
+      const urgent = items.filter(i => (i.status === 'Dalam Proses' || i.status === 'Menunggu Data/Akun') && i.dueDate <= today).length;
+
+      document.getElementById('statInProcess').innerText = inProcess;
+      document.getElementById('statUrgent').innerText = urgent;
+      document.getElementById('statBonusCount').innerText = bonusCount;
+      document.getElementById('statDone').innerText = done;
     }
 
-    function renderTable() {
-      const filterStatus = document.getElementById('filterStatus').value;
-      const filterBonus = document.getElementById('filterBonus').value;
-      const tbody = document.getElementById('dataTableBody');
+    // Render Pengingat H-1 / Hari Ini
+    function renderReminders() {
+      const today = getFormattedDateOffset(0);
+      const tomorrow = getFormattedDateOffset(1);
 
-      let filtered = records.filter(item => {
-        const matchStatus = (filterStatus === 'Semua') || (item.status === filterStatus);
-        const matchBonus = (filterBonus === 'Semua') || (item.hasBonus === filterBonus);
-        return matchStatus && matchBonus;
+      const reminders = items.filter(i => {
+        const isNotDone = i.status !== 'Selesai' && i.status !== 'Ditolak';
+        return isNotDone && (i.dueDate <= tomorrow);
       });
 
-      if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-slate-500">Belum ada data pencatatan.</td></tr>`;
+      document.getElementById('reminderCountBadge').innerText = reminders.length;
+      const container = document.getElementById('reminderContainer');
+
+      if (reminders.length === 0) {
+        container.innerHTML = `
+          <div class="bg-white rounded-2xl p-6 text-center border border-slate-150 shadow-xs">
+            <span class="text-3xl block mb-2">🎉</span>
+            <p class="text-xs font-bold text-slate-800">Semua Beres! Tidak Ada Pengingat Mendesak</p>
+            <p class="text-[11px] text-slate-400">Tidak ada komplain garansi yang melewati batas waktu hari ini atau H-1.</p>
+          </div>
+        `;
         return;
       }
 
-      tbody.innerHTML = filtered.map(item => {
-        let badgeColor = 'bg-blue-500/20 text-blue-300 border-blue-500/30';
-        if (item.status === 'Selesai') badgeColor = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
-        if (item.status === 'Ditolak') badgeColor = 'bg-rose-500/20 text-rose-300 border-rose-500/30';
-        if (item.status === 'Menunggu Sparepart/Data') badgeColor = 'bg-amber-500/20 text-amber-300 border-amber-500/30';
+      container.innerHTML = reminders.map(item => {
+        const isToday = item.dueDate <= today;
+        const tagText = isToday ? "🚨 HARI INI / LEWAT BATAS" : "⏳ TARGET BESOK (H-1)";
+        const tagStyle = isToday 
+          ? "bg-rose-100 text-rose-700 border-rose-200" 
+          : "bg-amber-100 text-amber-700 border-amber-200";
 
         return `
-          <tr class="hover:bg-slate-800/40 transition">
-            <td class="py-3 px-3">
-              <div class="font-medium text-slate-200">${item.name}</div>
-              <div class="text-xs text-slate-500">${item.contact}</div>
-            </td>
-            <td class="py-3 px-3">
-              <div class="text-slate-200 font-medium">${item.product}</div>
-              <div class="text-xs text-slate-500">${item.notes}</div>
-            </td>
-            <td class="py-3 px-3">
-              <select onchange="updateStatus(${item.id}, this.value)" class="text-xs rounded border px-2 py-1 bg-slate-900 ${badgeColor}">
-                <option value="Dalam Proses" ${item.status === 'Dalam Proses' ? 'selected' : ''}>Dalam Proses</option>
-                <option value="Menunggu Sparepart/Data" ${item.status === 'Menunggu Sparepart/Data' ? 'selected' : ''}>Menunggu Data</option>
-                <option value="Selesai" ${item.status === 'Selesai' ? 'selected' : ''}>Selesai</option>
-                <option value="Ditolak" ${item.status === 'Ditolak' ? 'selected' : ''}>Ditolak</option>
-              </select>
-            </td>
-            <td class="py-3 px-3 whitespace-nowrap">
-              <span>${item.dueDate}</span>
-            </td>
-            <td class="py-3 px-3">
-              ${item.hasBonus === 'Ya' 
-                ? `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-purple-500/20 text-purple-300 border border-purple-500/30">🎁 ${item.bonusDetail}</span>` 
-                : `<span class="text-slate-600">-</span>`
-              }
-            </td>
-            <td class="py-3 px-3 text-center">
-              <button onclick="deleteRecord(${item.id})" class="text-rose-400 hover:text-rose-300 text-xs px-2 py-1 rounded bg-rose-500/10 hover:bg-rose-500/20 transition">Hapus</button>
-            </td>
-          </tr>
+          <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 hover:border-purple-200 transition">
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-xl bg-purple-50 text-brand-purple flex items-center justify-center font-bold text-sm shrink-0">
+                ${item.name.charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="font-bold text-sm text-slate-900">${item.name}</span>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${tagStyle}">${tagText}</span>
+                  ${item.hasBonus ? `<span class="text-[10px] bg-lime-100 text-emerald-800 border border-lime-300 font-bold px-2 py-0.5 rounded-full">🎁 Bonus: ${item.bonusDetail}</span>` : ''}
+                </div>
+                <p class="text-xs text-slate-500 mt-0.5">Produk: <span class="font-medium text-slate-700">${item.product}</span> • Kendala: <span class="italic text-slate-600">${item.notes}</span></p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2 self-end sm:self-center">
+              <button onclick="sendWhatsApp(${item.id})" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs px-3 py-1.5 rounded-xl flex items-center gap-1.5 transition shadow-xs">
+                <span>💬 Follow-Up WA</span>
+              </button>
+              <button onclick="updateItemStatus(${item.id}, 'Selesai')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-3 py-1.5 rounded-xl transition">
+                Selesaikan
+              </button>
+            </div>
+          </div>
         `;
       }).join('');
     }
 
-    // Inisialisasi awal
-    renderTable();
-    checkReminders();
+    // Filter Tab Logic
+    function setTabFilter(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-slate-900', 'text-white');
+        btn.classList.add('bg-slate-100', 'text-slate-600');
+      });
+
+      const activeBtn = document.getElementById(`tab-${tab}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-slate-100', 'text-slate-600');
+        activeBtn.classList.add('bg-slate-900', 'text-white');
+      }
+      renderData();
+    }
+
+    // Render Data Card List (Tampilan Modern)
+    function renderData() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const container = document.getElementById('dataCardList');
+
+      let filtered = items.filter(item => {
+        const matchesQuery = item.name.toLowerCase().includes(query) ||
+                             item.product.toLowerCase().includes(query) ||
+                             item.phone.includes(query);
+
+        if (!matchesQuery) return false;
+
+        if (currentTab === 'PROSES') return item.status === 'Dalam Proses';
+        if (currentTab === 'MENUNGGU') return item.status === 'Menunggu Data/Akun';
+        if (currentTab === 'SELESAI') return item.status === 'Selesai';
+        if (currentTab === 'BONUS') return item.hasBonus === true;
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="py-12 text-center text-slate-400">
+            <p class="text-sm font-semibold">Tidak ada data klaim atau bonus yang cocok.</p>
+            <p class="text-xs text-slate-400 mt-1">Gunakan tombol "+ Tambah Garansi / Bonus" untuk menambahkan data baru.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(item => {
+        let badgeColor = "bg-blue-50 text-blue-700 border-blue-200";
+        if (item.status === 'Selesai') badgeColor = "bg-emerald-50 text-emerald-700 border-emerald-200";
+        if (item.status === 'Menunggu Data/Akun') badgeColor = "bg-amber-50 text-amber-700 border-amber-200";
+        if (item.status === 'Ditolak') badgeColor = "bg-rose-50 text-rose-700 border-rose-200";
+
+        return `
+          <div class="border border-slate-150 rounded-2xl p-4 hover:border-slate-300 transition bg-white flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <!-- Left Info -->
+            <div class="space-y-1.5 flex-1">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-extrabold text-slate-900 text-sm">${item.name}</span>
+                <span class="text-xs text-slate-400 font-mono">(${item.phone})</span>
+                <span class="text-[11px] font-bold px-2 py-0.5 rounded-full border ${badgeColor}">
+                  ${item.status}
+                </span>
+                ${item.hasBonus ? `
+                  <span class="inline-flex items-center gap-1 text-[11px] font-black px-2.5 py-0.5 rounded-full bg-[#bef724]/30 text-emerald-950 border border-[#bef724]">
+                    🎁 Bonus: ${item.bonusDetail}
+                  </span>
+                ` : ''}
+              </div>
+
+              <div class="flex items-center gap-3 text-xs text-slate-600 flex-wrap">
+                <span class="font-semibold text-slate-800">📦 ${item.product}</span>
+                <span class="text-slate-400">•</span>
+                <span>📅 Target: <strong class="text-slate-700">${item.dueDate}</strong></span>
+              </div>
+
+              <p class="text-xs text-slate-500 italic bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-100 max-w-xl">
+                "${item.notes}"
+              </p>
+            </div>
+
+            <!-- Right Actions -->
+            <div class="flex items-center gap-2 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-slate-100">
+              <!-- Quick Status Select -->
+              <select onchange="updateItemStatus(${item.id}, this.value)" class="text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-slate-700 outline-none focus:border-brand-purple">
+                <option value="Dalam Proses" ${item.status === 'Dalam Proses' ? 'selected' : ''}>⏳ Dalam Proses</option>
+                <option value="Menunggu Data/Akun" ${item.status === 'Menunggu Data/Akun' ? 'selected' : ''}>📦 Menunggu Data</option>
+                <option value="Selesai" ${item.status === 'Selesai' ? 'selected' : ''}>✅ Selesai</option>
+                <option value="Ditolak" ${item.status === 'Ditolak' ? 'selected' : ''}>❌ Ditolak</option>
+              </select>
+
+              <!-- WA Button -->
+              <button onclick="sendWhatsApp(${item.id})" title="Kirim Pesan WhatsApp" class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 flex items-center justify-center transition">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                  <path d="M12.031 2C6.495 2 2 6.492 2 12.028c0 1.944.555 3.766 1.516 5.308L2 22l4.82-1.469a9.98 9.98 0 005.211 1.497h.004c5.536 0 10.031-4.492 10.031-10.028 0-2.678-1.043-5.197-2.937-7.091A9.972 9.972 0 0012.031 2zm0 18.258h-.003a8.27 8.27 0 01-4.223-1.156l-.303-.18-3.138.958.976-3.056-.197-.314a8.275 8.275 0 01-1.272-4.482c0-4.568 3.717-8.285 8.288-8.285 2.213 0 4.293.863 5.858 2.428a8.232 8.232 0 012.425 5.857c0 4.568-3.717 8.285-8.286 8.285z"/>
+                </svg>
+              </button>
+
+              <!-- Delete Button -->
+              <button onclick="deleteItem(${item.id})" title="Hapus" class="w-8 h-8 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-100 flex items-center justify-center transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Jalankan kalkulasi dan render saat load
+    window.onload = function() {
+      calculateMetrics();
+      renderReminders();
+      renderData();
+    };
   </script>
 </body>
 </html>
