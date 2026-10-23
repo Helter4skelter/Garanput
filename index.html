@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>reztroid® - Garansi & Bonus Management Dashboard</title>
   
   <!-- Fonts & Icons -->
@@ -53,14 +53,14 @@
 
   <style>
     body { background-color: #f7f9fc; }
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: #f1f5f9; }
     ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
     ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     
     .hero-gradient {
       background: linear-gradient(135deg, #7451f8 0%, #5d36f5 60%, #4b23e8 100%);
-      box-shadow: 0 20px 40px -15px rgba(109, 77, 246, 0.45);
+      box-shadow: 0 16px 36px -12px rgba(109, 77, 246, 0.4);
     }
 
     .neon-btn {
@@ -92,133 +92,127 @@
     }
   </style>
 </head>
-<body class="font-sans text-slate-800 antialiased min-h-screen pb-20 selection:bg-brand-purple selection:text-white">
+<body class="font-sans text-slate-800 antialiased min-h-screen pb-24 selection:bg-brand-purple selection:text-white">
 
-  <!-- Container Melebar & Fleksibel: max-w-7xl px-4 sm:px-6 lg:px-8 -->
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 space-y-6">
+  <!-- Main Container -->
+  <div class="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-4 sm:pt-6 space-y-4 sm:space-y-6">
     
-    <!-- Top Bar Navigation (Full Width) -->
-    <header class="bg-white rounded-2xl px-6 py-4 flex items-center justify-between shadow-sm border border-slate-100/80 backdrop-blur-md">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-brand-purple flex items-center justify-center text-white font-black text-xl shadow-md shadow-brand-purple/30 transform hover:rotate-6 transition cursor-pointer">
+    <!-- Top Bar Navigation -->
+    <header class="bg-white rounded-2xl px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between shadow-xs border border-slate-150">
+      <div class="flex items-center gap-2.5 sm:gap-3">
+        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-brand-purple flex items-center justify-center text-white font-black text-lg sm:text-xl shadow-md shadow-brand-purple/30 shrink-0">
           R
         </div>
-        <div class="flex items-center gap-2">
-          <span class="text-xl font-extrabold text-slate-900 tracking-tight">reztroid<span class="text-xs text-slate-400 font-normal ml-0.5">®</span></span>
-          <span class="bg-brand-pillPurple text-brand-pillText text-[10px] font-bold px-2.5 py-0.5 rounded-full tracking-wider uppercase animate-pulse">
-            ADMIN DASHBOARD
+        <div class="flex items-center gap-1.5 sm:gap-2">
+          <span class="text-lg sm:text-xl font-extrabold text-slate-900 tracking-tight">reztroid<span class="text-[10px] text-slate-400 font-normal ml-0.5">®</span></span>
+          <span class="bg-brand-pillPurple text-brand-pillText text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full tracking-wider uppercase shrink-0">
+            ADMIN
           </span>
         </div>
       </div>
 
-      <div class="flex items-center gap-2">
-        <button onclick="handleManualSync()" title="Refresh & Sinkronisasi" class="flex items-center gap-1.5 bg-white border border-slate-200 text-slate-600 hover:text-slate-900 font-bold text-xs px-4 py-2.5 rounded-xl transition shadow-xs hover:border-brand-purple">
+      <div>
+        <button onclick="handleManualSync()" title="Refresh & Sinkronisasi" class="flex items-center gap-1 bg-white border border-slate-200 text-slate-700 font-bold text-xs px-3 sm:px-4 py-2 rounded-xl transition shadow-xs hover:border-brand-purple active:scale-95">
           <svg id="syncIcon" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
           </svg>
-          Sync Data
+          <span class="text-[11px] sm:text-xs">Sync Data</span>
         </button>
       </div>
     </header>
 
-    <!-- Hero Card Banner (Full Width Lebar Proporsional) -->
-    <div class="hero-gradient rounded-3xl p-6 sm:p-9 text-white relative overflow-hidden">
+    <!-- Hero Card Banner -->
+    <div class="hero-gradient rounded-3xl p-5 sm:p-8 lg:p-9 text-white relative overflow-hidden">
       <div class="absolute -right-12 -bottom-12 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
-      <div class="absolute top-0 right-1/4 w-40 h-40 bg-[#bef724]/20 rounded-full blur-3xl pointer-events-none"></div>
 
-      <div class="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-        <div class="space-y-3 max-w-2xl">
-          <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md border border-white/25 px-3.5 py-1 rounded-full text-xs font-semibold text-white/95">
+      <div class="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5 sm:gap-6">
+        <div class="space-y-2.5 sm:space-y-3 max-w-2xl">
+          <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md border border-white/25 px-3 py-1 rounded-full text-xs font-semibold text-white/95">
             <span class="inline-block w-2 h-2 rounded-full bg-[#bef724] animate-ping"></span>
             <span class="tracking-wide uppercase text-[10px] font-black">SISTEM GARANSI &amp; BONUS AKTIF</span>
           </div>
 
-          <h1 class="text-2xl sm:text-4xl font-extrabold tracking-tight leading-tight">
+          <h1 class="text-xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight leading-tight">
             Pantau Garansi, Pengingat &amp; Bonus Aktif.
           </h1>
           <p class="text-xs sm:text-sm text-purple-100/90 leading-relaxed font-normal">
             Dukung Drag-and-Drop otomatis dari chat WhatsApp, review sebelum simpan, dan kelola reward pelanggan secara real-time.
           </p>
 
-          <div class="pt-2">
-            <button onclick="openModal()" class="w-full sm:w-auto neon-btn font-extrabold text-sm sm:text-base py-3.5 px-8 rounded-2xl flex items-center justify-center gap-2 cursor-pointer shadow-lg">
-              <span class="text-xl leading-none font-black">+</span>
+          <div class="pt-1.5 sm:pt-2">
+            <button onclick="openModal()" class="w-full sm:w-auto neon-btn font-extrabold text-xs sm:text-sm py-3.5 px-6 sm:px-8 rounded-2xl flex items-center justify-center gap-2 cursor-pointer shadow-md active:scale-95">
+              <span class="text-lg leading-none font-black">+</span>
               <span>Tambah Garansi / Bonus Manual</span>
             </button>
           </div>
         </div>
 
-        <!-- Metric Counter Grid (Di sebelah kanan pada Desktop) -->
-        <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-6 border border-white/20 grid grid-cols-2 gap-4 sm:gap-6 shrink-0 lg:w-96 divide-y sm:divide-y-0 divide-white/15">
-          <div class="pt-2 sm:pt-0">
-            <p class="text-[10px] uppercase font-black tracking-wider text-purple-200 mb-1">DALAM PROSES</p>
-            <div class="flex items-baseline gap-1.5">
-              <span id="statInProcess" class="text-2xl sm:text-3xl font-black text-white">0</span>
-              <span class="text-[11px] text-purple-200 font-medium">Klaim</span>
+        <!-- Metric Counter Grid -->
+        <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-5 border border-white/20 grid grid-cols-2 gap-3 sm:gap-4 shrink-0 lg:w-96 divide-y divide-white/15 sm:divide-y-0">
+          <div class="pt-1 sm:pt-0">
+            <p class="text-[9px] sm:text-[10px] uppercase font-black tracking-wider text-purple-200 mb-0.5">DALAM PROSES</p>
+            <div class="flex items-baseline gap-1">
+              <span id="statInProcess" class="text-xl sm:text-2xl lg:text-3xl font-black text-white">0</span>
+              <span class="text-[10px] sm:text-[11px] text-purple-200">Klaim</span>
             </div>
           </div>
 
-          <div class="pt-2 sm:pt-0 sm:border-l sm:border-white/15 sm:pl-4">
-            <p class="text-[10px] uppercase font-black tracking-wider text-amber-200 mb-1">PERLU TINDAKAN</p>
-            <div class="flex items-baseline gap-1.5">
-              <span id="statUrgent" class="text-2xl sm:text-3xl font-black text-amber-300">0</span>
-              <span class="text-[11px] text-amber-100 font-medium">Klaim</span>
+          <div class="pt-1 sm:pt-0 sm:border-l sm:border-white/15 sm:pl-4">
+            <p class="text-[9px] sm:text-[10px] uppercase font-black tracking-wider text-amber-200 mb-0.5">PERLU TINDAKAN</p>
+            <div class="flex items-baseline gap-1">
+              <span id="statUrgent" class="text-xl sm:text-2xl lg:text-3xl font-black text-amber-300">0</span>
+              <span class="text-[10px] sm:text-[11px] text-amber-100">Klaim</span>
             </div>
           </div>
 
-          <div class="pt-4 border-t border-white/15">
-            <p class="text-[10px] uppercase font-black tracking-wider text-lime-200 mb-1">TOTAL BONUS</p>
-            <div class="flex items-baseline gap-1.5">
-              <span id="statBonusCount" class="text-2xl sm:text-3xl font-black text-[#bef724]">0</span>
-              <span class="text-[11px] text-lime-200 font-medium">Customer</span>
+          <div class="pt-2 sm:pt-3 border-t border-white/15">
+            <p class="text-[9px] sm:text-[10px] uppercase font-black tracking-wider text-lime-200 mb-0.5">TOTAL BONUS</p>
+            <div class="flex items-baseline gap-1">
+              <span id="statBonusCount" class="text-xl sm:text-2xl lg:text-3xl font-black text-[#bef724]">0</span>
+              <span class="text-[10px] sm:text-[11px] text-lime-200">Customer</span>
             </div>
           </div>
 
-          <div class="pt-4 border-t border-white/15 sm:border-l sm:border-white/15 sm:pl-4">
-            <p class="text-[10px] uppercase font-black tracking-wider text-purple-200 mb-1">SELESAI</p>
-            <div class="flex items-baseline gap-1.5">
-              <span id="statDone" class="text-2xl sm:text-3xl font-black text-white">0</span>
-              <span class="text-[11px] text-purple-200 font-medium">Klaim</span>
+          <div class="pt-2 sm:pt-3 border-t border-white/15 sm:border-l sm:border-white/15 sm:pl-4">
+            <p class="text-[9px] sm:text-[10px] uppercase font-black tracking-wider text-purple-200 mb-0.5">SELESAI</p>
+            <div class="flex items-baseline gap-1">
+              <span id="statDone" class="text-xl sm:text-2xl lg:text-3xl font-black text-white">0</span>
+              <span class="text-[10px] sm:text-[11px] text-purple-200">Klaim</span>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- MAIN TWO-COLUMN DASHBOARD GRID (Desktop Layout) -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    <!-- MAIN TWO-COLUMN DASHBOARD GRID -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start">
 
       <!-- LEFT COLUMN: DROP ZONE & DATA TABLE (8 Kolom) -->
-      <div class="lg:col-span-8 space-y-6">
+      <div class="lg:col-span-8 space-y-5 sm:space-y-6">
         
         <!-- MAGIC DROP ZONE -->
-        <div id="dropZone" class="group relative bg-white rounded-3xl p-6 sm:p-7 border-2 border-dashed border-brand-purple/40 hover:border-brand-purple transition-all duration-300 shadow-sm cursor-pointer overflow-hidden text-center">
-          <div class="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition duration-300"></div>
-          
+        <div id="dropZone" class="group relative bg-white rounded-3xl p-5 sm:p-7 border-2 border-dashed border-brand-purple/40 hover:border-brand-purple transition-all duration-300 shadow-xs cursor-pointer overflow-hidden text-center">
           <div class="relative z-10 flex flex-col items-center justify-center space-y-2">
-            <div id="dropIcon" class="w-14 h-14 rounded-2xl bg-purple-50 text-brand-purple flex items-center justify-center text-3xl font-black group-hover:scale-110 group-hover:rotate-6 transition transform">
+            <div id="dropIcon" class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-purple-50 text-brand-purple flex items-center justify-center text-2xl sm:text-3xl font-black">
               📥
             </div>
             <div>
               <h3 class="font-extrabold text-sm sm:text-base text-slate-800">
                 Tarik &amp; Lepas (Drag) Chat Laporan ke Sini!
               </h3>
-              <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto leading-relaxed">
-                Blok teks WhatsApp customer lalu seret ke kotak ini, atau tekan <kbd class="px-2 py-0.5 bg-slate-100 border border-slate-300 rounded-md font-mono text-[11px] font-bold text-slate-700 shadow-2xs">Ctrl + V</kbd> / <kbd class="px-2 py-0.5 bg-slate-100 border border-slate-300 rounded-md font-mono text-[11px] font-bold text-slate-700 shadow-2xs">Cmd + V</kbd>. Data akan otomatis terbuka di modal review sebelum disimpan.
+              <p class="text-[11px] sm:text-xs text-slate-400 mt-1 max-w-md mx-auto leading-relaxed">
+                Salin teks WhatsApp customer lalu seret atau tekan <kbd class="px-1.5 py-0.5 bg-slate-100 border border-slate-300 rounded font-mono text-[10px] font-bold text-slate-700">Ctrl/Cmd + V</kbd>. Data akan otomatis terbuka di modal review untuk dicek.
               </p>
-            </div>
-            <div class="pt-1 flex items-center gap-1.5 text-[11px] font-bold text-brand-purple bg-purple-50 px-3 py-1 rounded-full">
-              <span>⚡ Auto-Parsing &amp; Preview Sebelum Simpan</span>
             </div>
           </div>
         </div>
 
         <!-- DAFTAR DATA & FILTER -->
-        <div class="bg-white rounded-3xl p-6 sm:p-7 shadow-sm border border-slate-100 space-y-4">
+        <div class="bg-white rounded-3xl p-4 sm:p-6 shadow-xs border border-slate-150 space-y-4">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
             <div>
-              <h3 class="font-extrabold text-slate-900 text-base">Semua Catatan Garansi &amp; Bonus</h3>
-              <p class="text-xs text-slate-400">Pencarian instan dan quick filter kategori produk.</p>
+              <h3 class="font-extrabold text-slate-900 text-sm sm:text-base">Semua Catatan Garansi &amp; Bonus</h3>
+              <p class="text-[11px] sm:text-xs text-slate-400">Pencarian instan dan filter kategori produk.</p>
             </div>
 
             <div class="relative w-full sm:w-64">
@@ -226,32 +220,32 @@
                 type="text" 
                 id="searchInput" 
                 oninput="renderData()" 
-                placeholder="Ketik nama, no HP, atau produk..."
-                class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 pl-10 text-xs text-slate-800 focus:outline-none focus:border-brand-purple focus:bg-white transition"
+                placeholder="Cari nama, HP, produk..."
+                class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 pl-9 text-xs text-slate-800 focus:outline-none focus:border-brand-purple focus:bg-white transition"
               >
-              <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
               </svg>
             </div>
           </div>
 
           <!-- Filter Status Tabs -->
-          <div class="flex items-center gap-1.5 overflow-x-auto pb-2 text-xs font-semibold no-scrollbar">
-            <button onclick="setTabFilter('ALL')" id="tab-ALL" class="tab-btn px-3.5 py-1.5 rounded-xl transition bg-slate-900 text-white whitespace-nowrap">Semua Status</button>
-            <button onclick="setTabFilter('PROSES')" id="tab-PROSES" class="tab-btn px-3.5 py-1.5 rounded-xl transition bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">⏳ Dalam Proses</button>
-            <button onclick="setTabFilter('MENUNGGU')" id="tab-MENUNGGU" class="tab-btn px-3.5 py-1.5 rounded-xl transition bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">📦 Menunggu Data</button>
-            <button onclick="setTabFilter('BONUS')" id="tab-BONUS" class="tab-btn px-3.5 py-1.5 rounded-xl transition bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">🎁 Dapat Bonus</button>
-            <button onclick="setTabFilter('SELESAI')" id="tab-SELESAI" class="tab-btn px-3.5 py-1.5 rounded-xl transition bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">✅ Selesai</button>
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs font-semibold no-scrollbar">
+            <button onclick="setTabFilter('ALL')" id="tab-ALL" class="tab-btn px-3 py-1.5 rounded-xl transition bg-slate-900 text-white whitespace-nowrap text-xs">Semua</button>
+            <button onclick="setTabFilter('PROSES')" id="tab-PROSES" class="tab-btn px-3 py-1.5 rounded-xl transition bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap text-xs">⏳ Proses</button>
+            <button onclick="setTabFilter('MENUNGGU')" id="tab-MENUNGGU" class="tab-btn px-3 py-1.5 rounded-xl transition bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap text-xs">📦 Menunggu</button>
+            <button onclick="setTabFilter('BONUS')" id="tab-BONUS" class="tab-btn px-3 py-1.5 rounded-xl transition bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap text-xs">🎁 Bonus</button>
+            <button onclick="setTabFilter('SELESAI')" id="tab-SELESAI" class="tab-btn px-3 py-1.5 rounded-xl transition bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap text-xs">✅ Selesai</button>
           </div>
 
           <!-- Quick Chips Produk -->
-          <div class="flex items-center gap-1.5 overflow-x-auto pb-2 text-[11px] font-bold text-slate-500">
-            <span class="text-slate-400">Quick Filter:</span>
-            <button onclick="filterByProduct('')" class="chip-btn px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-purple-100 hover:text-brand-purple transition">Semua</button>
-            <button onclick="filterByProduct('netflix')" class="chip-btn px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-purple-100 hover:text-brand-purple transition">Netflix</button>
-            <button onclick="filterByProduct('canva')" class="chip-btn px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-purple-100 hover:text-brand-purple transition">Canva</button>
-            <button onclick="filterByProduct('spotify')" class="chip-btn px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-purple-100 hover:text-brand-purple transition">Spotify</button>
-            <button onclick="filterByProduct('youtube')" class="chip-btn px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-purple-100 hover:text-brand-purple transition">YouTube</button>
+          <div class="flex items-center gap-1.5 overflow-x-auto pb-1 text-[11px] font-bold text-slate-500 no-scrollbar">
+            <span class="text-slate-400 shrink-0">Filter:</span>
+            <button onclick="filterByProduct('')" class="chip-btn px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-purple-100 hover:text-brand-purple transition shrink-0">Semua</button>
+            <button onclick="filterByProduct('netflix')" class="chip-btn px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-purple-100 hover:text-brand-purple transition shrink-0">Netflix</button>
+            <button onclick="filterByProduct('canva')" class="chip-btn px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-purple-100 hover:text-brand-purple transition shrink-0">Canva</button>
+            <button onclick="filterByProduct('spotify')" class="chip-btn px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-purple-100 hover:text-brand-purple transition shrink-0">Spotify</button>
+            <button onclick="filterByProduct('youtube')" class="chip-btn px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-purple-100 hover:text-brand-purple transition shrink-0">YouTube</button>
           </div>
 
           <div id="dataCardList" class="space-y-3 pt-1"></div>
@@ -259,18 +253,18 @@
 
       </div>
 
-      <!-- RIGHT COLUMN: PENGINGAT / REMINDER PANEL (4 Kolom - Sticky Melayang di Desktop) -->
+      <!-- RIGHT COLUMN: PENGINGAT (4 Kolom - Sticky di Desktop) -->
       <div class="lg:col-span-4 lg:sticky lg:top-6 space-y-4">
         
-        <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 space-y-4">
+        <div class="bg-white rounded-3xl p-4 sm:p-6 shadow-xs border border-slate-150 space-y-3.5">
           <div class="flex items-center justify-between border-b border-slate-100 pb-3">
             <div>
-              <h2 class="text-base font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+              <h2 class="text-sm sm:text-base font-extrabold text-slate-900 tracking-tight flex items-center gap-1.5">
                 <span>🔔</span> Pengingat Harian
               </h2>
-              <div class="flex items-center gap-1.5 text-xs text-slate-500 mt-0.5">
+              <div class="flex items-center gap-1.5 text-[11px] text-slate-500 mt-0.5">
                 <span>Perlu Difollow-up:</span>
-                <span id="activeReminderCountBadge" class="bg-purple-100 text-brand-purple font-black px-2 py-0.2 rounded-full text-xs">
+                <span id="activeReminderCountBadge" class="bg-purple-100 text-brand-purple font-black px-2 py-0.2 rounded-full text-[10px]">
                   0
                 </span>
               </div>
@@ -278,20 +272,20 @@
           </div>
 
           <!-- Switch Tabs Pengingat Garansi vs Bonus -->
-          <div class="flex bg-slate-100 p-1 rounded-2xl text-xs font-bold gap-1 w-full">
-            <button id="remTabWarrantyBtn" onclick="switchReminderTab('warranty')" class="flex-1 py-2 rounded-xl bg-white text-brand-purple shadow-sm transition flex items-center justify-center gap-1.5">
+          <div class="flex bg-slate-100 p-1 rounded-xl text-xs font-bold gap-1 w-full">
+            <button id="remTabWarrantyBtn" onclick="switchReminderTab('warranty')" class="flex-1 py-1.5 rounded-lg bg-white text-brand-purple shadow-xs transition flex items-center justify-center gap-1">
               <span>🛡️ Garansi</span>
               <span id="wCount" class="bg-purple-100 text-brand-purple px-1.5 py-0.2 rounded-full text-[10px] font-black">0</span>
             </button>
-            <button id="remTabBonusBtn" onclick="switchReminderTab('bonus')" class="flex-1 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5">
+            <button id="remTabBonusBtn" onclick="switchReminderTab('bonus')" class="flex-1 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1">
               <span>🎁 Bonus</span>
               <span id="bCount" class="bg-slate-200 text-slate-700 px-1.5 py-0.2 rounded-full text-[10px] font-black">0</span>
             </button>
           </div>
 
           <!-- Containers -->
-          <div id="warrantyReminderContainer" class="space-y-3 max-h-[580px] overflow-y-auto pr-1"></div>
-          <div id="bonusReminderContainer" class="space-y-3 hidden max-h-[580px] overflow-y-auto pr-1"></div>
+          <div id="warrantyReminderContainer" class="space-y-2.5 max-h-[500px] overflow-y-auto pr-0.5"></div>
+          <div id="bonusReminderContainer" class="space-y-2.5 hidden max-h-[500px] overflow-y-auto pr-0.5"></div>
         </div>
 
       </div>
@@ -300,40 +294,43 @@
 
   </div>
 
-  <!-- MODAL INPUT / VERIFIKASI SEBELUM SIMPAN -->
-  <div id="modalOverlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs hidden items-center justify-center p-4 z-50 transition-opacity">
-    <div class="bg-white rounded-3xl w-full max-w-lg p-6 shadow-2xl border border-slate-100 transform transition-all animate-bounce-short">
-      <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
+  <!-- MODAL INPUT / VERIFIKASI (FIX LAYAR HP DENGAN SCROLL MANDIRI) -->
+  <div id="modalOverlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs hidden items-center justify-center p-3 sm:p-4 z-50 transition-opacity">
+    <div class="bg-white rounded-3xl w-full max-w-lg max-h-[90vh] flex flex-col p-4 sm:p-6 shadow-2xl border border-slate-100 transform transition-all animate-bounce-short">
+      
+      <!-- Modal Header (Fixed) -->
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100 shrink-0">
         <div>
-          <h4 id="modalTitle" class="font-black text-slate-900 text-lg">Input / Review Garansi &amp; Bonus</h4>
-          <p class="text-xs text-slate-400">Periksa detail klaim dan tetapkan reminder sebelum disimpan.</p>
+          <h4 id="modalTitle" class="font-black text-slate-900 text-base sm:text-lg">Review Data Garansi</h4>
+          <p class="text-[11px] sm:text-xs text-slate-400">Periksa detail klaim sebelum disimpan.</p>
         </div>
         <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 font-bold transition">
           ✕
         </button>
       </div>
 
-      <form id="addForm" onsubmit="handleFormSubmit(event)" class="space-y-3.5 text-xs sm:text-sm">
+      <!-- Modal Body (Scrollable agar tidak terpotong di HP) -->
+      <form id="addForm" onsubmit="handleFormSubmit(event)" class="overflow-y-auto py-3 space-y-3 text-xs sm:text-sm pr-1">
         <div>
           <label class="block font-bold text-slate-700 mb-1">Nama Customer <span class="text-rose-500">*</span></label>
-          <input type="text" id="inputName" required placeholder="Contoh: Ryan Pratama" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 focus:border-brand-purple outline-none">
+          <input type="text" id="inputName" required placeholder="Contoh: Ryan Pratama" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:border-brand-purple outline-none">
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           <div>
             <label class="block font-bold text-slate-700 mb-1">WhatsApp / No HP <span class="text-rose-500">*</span></label>
-            <input type="text" id="inputPhone" required placeholder="08xxxxxxxxxx" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 focus:border-brand-purple outline-none">
+            <input type="text" id="inputPhone" required placeholder="08xxxxxxxxxx" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:border-brand-purple outline-none">
           </div>
           <div>
             <label class="block font-bold text-slate-700 mb-1">Produk / Layanan <span class="text-rose-500">*</span></label>
-            <input type="text" id="inputProduct" required placeholder="Contoh: Netflix 1P 4K" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 focus:border-brand-purple outline-none">
+            <input type="text" id="inputProduct" required placeholder="Contoh: Netflix 1P 4K" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:border-brand-purple outline-none">
           </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           <div>
             <label class="block font-bold text-slate-700 mb-1">Status Garansi</label>
-            <select id="inputStatus" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 font-bold focus:border-brand-purple outline-none">
+            <select id="inputStatus" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 font-bold text-xs focus:border-brand-purple outline-none">
               <option value="Dalam Proses">⏳ Dalam Proses</option>
               <option value="Menunggu Data/Akun">📦 Menunggu Data / Akun</option>
               <option value="Selesai">✅ Selesai</option>
@@ -343,44 +340,46 @@
           </div>
           <div>
             <label class="block font-bold text-slate-700 mb-1">Target Selesai Garansi</label>
-            <input type="date" id="inputDueDate" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 font-medium focus:border-brand-purple outline-none">
+            <input type="date" id="inputDueDate" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:border-brand-purple outline-none">
           </div>
         </div>
 
-        <div class="bg-purple-50/70 border border-purple-100 rounded-2xl p-4 space-y-3">
+        <!-- Bonus Option -->
+        <div class="bg-purple-50/70 border border-purple-100 rounded-2xl p-3 space-y-2">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
-              <span class="text-lg">🎁</span>
+              <span class="text-base">🎁</span>
               <div>
-                <p class="font-extrabold text-slate-800">Dapat Bonus Customer?</p>
-                <p class="text-[11px] text-slate-500">Berikan reward atau kompensasi garansi</p>
+                <p class="font-extrabold text-xs text-slate-800">Dapat Bonus Customer?</p>
+                <p class="text-[10px] text-slate-500">Berikan kompensasi atau bonus</p>
               </div>
             </div>
             <label class="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" id="inputHasBonus" onchange="toggleBonusField()" class="sr-only peer">
-              <div class="w-10 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-purple"></div>
+              <div class="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-purple"></div>
             </label>
           </div>
 
-          <div id="bonusDetailContainer" class="hidden pt-1 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          <div id="bonusDetailContainer" class="hidden pt-1 grid grid-cols-1 sm:grid-cols-2 gap-2">
             <div>
-              <label class="block text-[11px] font-bold text-brand-purpleDark mb-1">Rincian Bonus</label>
-              <input type="text" id="inputBonusDetail" placeholder="Misal: Tambah +3 Hari Aktif" class="w-full bg-white border border-purple-200 rounded-xl px-3 py-2 focus:border-brand-purple outline-none">
+              <label class="block text-[10px] font-bold text-brand-purpleDark mb-0.5">Rincian Bonus</label>
+              <input type="text" id="inputBonusDetail" placeholder="Misal: Tambah +3 Hari Aktif" class="w-full bg-white border border-purple-200 rounded-xl px-3 py-1.5 text-xs focus:border-brand-purple outline-none">
             </div>
             <div>
-              <label class="block text-[11px] font-bold text-brand-purpleDark mb-1">Batas Expired Bonus</label>
-              <input type="date" id="inputBonusDeadline" class="w-full bg-white border border-purple-200 rounded-xl px-3 py-2 focus:border-brand-purple outline-none">
+              <label class="block text-[10px] font-bold text-brand-purpleDark mb-0.5">Expired Bonus</label>
+              <input type="date" id="inputBonusDeadline" class="w-full bg-white border border-purple-200 rounded-xl px-3 py-1.5 text-xs focus:border-brand-purple outline-none">
             </div>
           </div>
         </div>
 
         <div>
           <label class="block font-bold text-slate-700 mb-1">Catatan Kendala / Detail Klaim</label>
-          <textarea id="inputNotes" rows="2" placeholder="Catatan perbaikan atau login akun..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 focus:border-brand-purple outline-none"></textarea>
+          <textarea id="inputNotes" rows="2" placeholder="Catatan kendala atau detail akun..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:border-brand-purple outline-none"></textarea>
         </div>
 
-        <div class="pt-2">
-          <button type="submit" class="w-full neon-btn font-extrabold py-3.5 rounded-2xl shadow-md flex items-center justify-center gap-2">
+        <!-- Submit Button (Selalu Terlihat di Bagian Bawah Modal) -->
+        <div class="pt-2 sticky bottom-0 bg-white">
+          <button type="submit" class="w-full neon-btn font-extrabold py-3 rounded-xl shadow-sm text-xs sm:text-sm flex items-center justify-center gap-2 active:scale-95">
             <span>Konfirmasi &amp; Simpan Data</span>
           </button>
         </div>
@@ -389,7 +388,7 @@
   </div>
 
   <!-- Toast -->
-  <div id="toast" class="fixed bottom-6 right-6 z-50 bg-slate-900 text-white text-xs px-4 py-3 rounded-2xl shadow-xl border border-slate-700 transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none flex items-center gap-2.5">
+  <div id="toast" class="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 bg-slate-900 text-white text-xs px-4 py-2.5 rounded-2xl shadow-xl border border-slate-700 transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none flex items-center gap-2">
     <span id="toastIcon">⚡</span>
     <span id="toastMsg" class="font-bold">Notifikasi sistem</span>
   </div>
@@ -426,8 +425,8 @@
     function triggerConfetti() {
       if (typeof confetti === 'function') {
         confetti({
-          particleCount: 60,
-          spread: 70,
+          particleCount: 50,
+          spread: 60,
           origin: { y: 0.7 },
           colors: ['#bef724', '#6d4df6', '#ff4d6d', '#38bdf8']
         });
@@ -443,7 +442,7 @@
         status: "Dalam Proses",
         dueDate: getFormattedDateOffset(0),
         hasBonus: true,
-        bonusDetail: "Free Akun Prime Video 1 Bulan",
+        bonusDetail: "Free Prime Video 1 Bulan",
         bonusDeadline: getFormattedDateOffset(2),
         notes: "Member re-invite sedang diproses."
       },
@@ -553,7 +552,7 @@
       document.getElementById('inputDueDate').value = getFormattedDateOffset(1);
 
       playAudioTone('pop');
-      showToast("Data terbaca! Silakan periksa sebelum disimpan.", "📝");
+      showToast("Data terbaca! Cek form sebelum simpan.", "📝");
     }
 
     const dropZone = document.getElementById('dropZone');
@@ -691,13 +690,13 @@
       const bContainer = document.getElementById('bonusReminderContainer');
 
       if (type === 'warranty') {
-        wBtn.className = "flex-1 py-2 rounded-xl bg-white text-brand-purple shadow-sm transition flex items-center justify-center gap-1.5";
-        bBtn.className = "flex-1 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5";
+        wBtn.className = "flex-1 py-1.5 rounded-lg bg-white text-brand-purple shadow-xs transition flex items-center justify-center gap-1";
+        bBtn.className = "flex-1 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1";
         wContainer.classList.remove('hidden');
         bContainer.classList.add('hidden');
       } else {
-        bBtn.className = "flex-1 py-2 rounded-xl bg-white text-brand-purple shadow-sm transition flex items-center justify-center gap-1.5";
-        wBtn.className = "flex-1 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1.5";
+        bBtn.className = "flex-1 py-1.5 rounded-lg bg-white text-brand-purple shadow-xs transition flex items-center justify-center gap-1";
+        wBtn.className = "flex-1 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center justify-center gap-1";
         bContainer.classList.remove('hidden');
         wContainer.classList.add('hidden');
       }
@@ -738,38 +737,37 @@
       const wContainer = document.getElementById('warrantyReminderContainer');
       if (warrantyReminders.length === 0) {
         wContainer.innerHTML = `
-          <div class="bg-slate-50/70 rounded-2xl p-6 text-center border border-dashed border-slate-200">
-            <span class="text-3xl block mb-1">🎉</span>
-            <p class="text-xs font-bold text-slate-800">Semua Klaim Terkendali Aman!</p>
-            <p class="text-[11px] text-slate-400">Tidak ada garansi yang mendekati deadline hari ini atau H-1.</p>
+          <div class="bg-slate-50/70 rounded-2xl p-5 text-center border border-dashed border-slate-200">
+            <span class="text-2xl block mb-1">🎉</span>
+            <p class="text-xs font-bold text-slate-800">Semua Klaim Aman!</p>
+            <p class="text-[10px] text-slate-400">Tidak ada garansi mendekati deadline.</p>
           </div>
         `;
       } else {
         wContainer.innerHTML = warrantyReminders.map(item => {
           const isToday = item.dueDate <= today;
-          const tagText = isToday ? "🚨 HARI INI / LEWAT" : "⏳ TARGET BESOK (H-1)";
+          const tagText = isToday ? "🚨 HARI INI / LEWAT" : "⏳ TARGET BESOK";
           const tagStyle = isToday ? "bg-rose-100 text-rose-700 border-rose-200" : "bg-amber-100 text-amber-700 border-amber-200";
 
           return `
-            <div class="card-hover bg-white rounded-2xl p-4 border border-slate-150 shadow-xs flex flex-col gap-2.5">
-              <div class="flex items-start gap-3">
-                <div class="w-9 h-9 rounded-xl bg-purple-50 text-brand-purple flex items-center justify-center font-bold text-xs shrink-0">
+            <div class="card-hover bg-white rounded-2xl p-3.5 border border-slate-150 shadow-2xs flex flex-col gap-2">
+              <div class="flex items-start gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-purple-50 text-brand-purple flex items-center justify-center font-bold text-xs shrink-0">
                   ${item.name.charAt(0).toUpperCase()}
                 </div>
                 <div class="min-w-0 flex-1">
                   <div class="flex items-center gap-1.5 flex-wrap">
                     <span class="font-extrabold text-xs text-slate-900 truncate">${item.name}</span>
-                    <span class="text-[9px] font-bold px-2 py-0.2 rounded-full border ${tagStyle}">${tagText}</span>
+                    <span class="text-[9px] font-bold px-1.5 py-0.2 rounded-full border ${tagStyle}">${tagText}</span>
                   </div>
-                  <p class="text-[11px] text-slate-500 mt-0.5 truncate font-semibold">${item.product}</p>
-                  <p class="text-[10px] text-slate-400 italic truncate">"${item.notes}"</p>
+                  <p class="text-[11px] text-slate-500 truncate font-semibold mt-0.5">${item.product}</p>
                 </div>
               </div>
-              <div class="flex items-center gap-2 pt-1 border-t border-slate-100">
-                <button onclick="sendWarrantyWA(${item.id})" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs py-1.5 rounded-xl flex items-center justify-center gap-1 transition shadow-xs">
+              <div class="flex items-center gap-1.5 pt-1 border-t border-slate-100">
+                <button onclick="sendWarrantyWA(${item.id})" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-[11px] py-1.5 rounded-lg flex items-center justify-center gap-1 transition shadow-xs active:scale-95">
                   <span>💬 WA</span>
                 </button>
-                <button onclick="updateItemStatus(${item.id}, 'Selesai')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-3 py-1.5 rounded-xl transition">
+                <button onclick="updateItemStatus(${item.id}, 'Selesai')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] px-3 py-1.5 rounded-lg transition active:scale-95">
                   Selesai
                 </button>
               </div>
@@ -781,10 +779,9 @@
       const bContainer = document.getElementById('bonusReminderContainer');
       if (bonusReminders.length === 0) {
         bContainer.innerHTML = `
-          <div class="bg-slate-50/70 rounded-2xl p-6 text-center border border-dashed border-slate-200">
-            <span class="text-3xl block mb-1">✨</span>
+          <div class="bg-slate-50/70 rounded-2xl p-5 text-center border border-dashed border-slate-200">
+            <span class="text-2xl block mb-1">✨</span>
             <p class="text-xs font-bold text-slate-800">Tidak Ada Bonus Jatuh Tempo</p>
-            <p class="text-[11px] text-slate-400">Semua reward pelanggan dalam masa aktif aman.</p>
           </div>
         `;
       } else {
@@ -794,20 +791,19 @@
           const tagStyle = isToday ? "bg-purple-100 text-purple-700 border-purple-200" : "bg-lime-100 text-lime-900 border-lime-300";
 
           return `
-            <div class="card-hover bg-white rounded-2xl p-4 border border-slate-150 shadow-xs flex flex-col gap-2.5">
-              <div class="flex items-start gap-3">
-                <div class="w-9 h-9 rounded-xl bg-lime-100 text-emerald-900 flex items-center justify-center font-bold text-xs shrink-0">🎁</div>
+            <div class="card-hover bg-white rounded-2xl p-3.5 border border-slate-150 shadow-2xs flex flex-col gap-2">
+              <div class="flex items-start gap-2.5">
+                <div class="w-8 h-8 rounded-lg bg-lime-100 text-emerald-900 flex items-center justify-center font-bold text-xs shrink-0">🎁</div>
                 <div class="min-w-0 flex-1">
                   <div class="flex items-center gap-1.5 flex-wrap">
                     <span class="font-extrabold text-xs text-slate-900 truncate">${item.name}</span>
-                    <span class="text-[9px] font-bold px-2 py-0.2 rounded-full border ${tagStyle}">${tagText}</span>
+                    <span class="text-[9px] font-bold px-1.5 py-0.2 rounded-full border ${tagStyle}">${tagText}</span>
                   </div>
                   <p class="text-[11px] text-brand-purple font-bold mt-0.5 truncate">${item.bonusDetail}</p>
-                  <p class="text-[10px] text-slate-400">Exp: ${item.bonusDeadline}</p>
                 </div>
               </div>
               <div class="pt-1 border-t border-slate-100">
-                <button onclick="sendBonusWA(${item.id})" class="w-full neon-btn font-extrabold text-xs py-1.5 rounded-xl flex items-center justify-center gap-1.5 transition shadow-xs">
+                <button onclick="sendBonusWA(${item.id})" class="w-full neon-btn font-extrabold text-[11px] py-1.5 rounded-lg flex items-center justify-center gap-1 transition shadow-xs active:scale-95">
                   <span>🎁 Bagikan Bonus via WA</span>
                 </button>
               </div>
@@ -859,10 +855,9 @@
 
       if (filtered.length === 0) {
         container.innerHTML = `
-          <div class="py-12 text-center text-slate-400">
-            <span class="text-3xl block mb-2">🔍</span>
-            <p class="text-sm font-bold text-slate-700">Tidak ada data klaim yang sesuai.</p>
-            <p class="text-xs text-slate-400 mt-0.5">Coba gunakan kata kunci lain atau bersihkan filter.</p>
+          <div class="py-10 text-center text-slate-400">
+            <span class="text-2xl block mb-1">🔍</span>
+            <p class="text-xs font-bold text-slate-700">Tidak ada data klaim yang sesuai.</p>
           </div>
         `;
         return;
@@ -876,49 +871,49 @@
         if (item.status === 'Tidak Ada Klaim') badgeColor = "bg-slate-100 text-slate-600 border-slate-200";
 
         return `
-          <div class="card-hover border border-slate-150 rounded-2xl p-4 bg-white flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-2xs">
-            <div class="space-y-1.5 flex-1 min-w-0">
-              <div class="flex items-center gap-2 flex-wrap">
-                <span class="font-extrabold text-slate-900 text-sm">${item.name}</span>
-                <span class="text-xs text-slate-400 font-mono">(${item.phone})</span>
-                <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${badgeColor}">${item.status}</span>
+          <div class="card-hover border border-slate-150 rounded-2xl p-3.5 sm:p-4 bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
+            <div class="space-y-1 flex-1 min-w-0">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="font-extrabold text-slate-900 text-xs sm:text-sm">${item.name}</span>
+                <span class="text-[11px] text-slate-400 font-mono">(${item.phone})</span>
+                <span class="text-[10px] font-bold px-2 py-0.2 rounded-full border ${badgeColor}">${item.status}</span>
                 ${item.hasBonus ? `
-                  <span class="inline-flex items-center gap-1 text-[11px] font-black px-2.5 py-0.5 rounded-full bg-[#bef724]/30 text-emerald-950 border border-[#bef724]">
-                    🎁 Bonus: ${item.bonusDetail} ${item.bonusDeadline ? `(s/d ${item.bonusDeadline})` : ''}
+                  <span class="inline-flex items-center gap-1 text-[10px] font-black px-2 py-0.2 rounded-full bg-[#bef724]/30 text-emerald-950 border border-[#bef724]">
+                    🎁 ${item.bonusDetail}
                   </span>
                 ` : ''}
               </div>
-              <div class="flex items-center gap-3 text-xs text-slate-600 flex-wrap">
+              <div class="flex items-center gap-2 text-[11px] text-slate-600 flex-wrap">
                 <span class="font-bold text-slate-800">📦 ${item.product}</span>
                 <span class="text-slate-300">•</span>
-                <span>📅 Target: <strong class="text-slate-700">${item.dueDate || '-'}</strong></span>
+                <span>Target: <strong>${item.dueDate || '-'}</strong></span>
               </div>
-              <p class="text-xs text-slate-500 italic bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100 max-w-xl truncate">"${item.notes}"</p>
+              <p class="text-[11px] text-slate-500 italic bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-100 truncate">"${item.notes}"</p>
             </div>
 
-            <div class="flex items-center gap-2 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-slate-100">
-              <select onchange="updateItemStatus(${item.id}, this.value)" class="text-xs font-bold bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-slate-700 outline-none focus:border-brand-purple cursor-pointer">
-                <option value="Dalam Proses" ${item.status === 'Dalam Proses' ? 'selected' : ''}>⏳ Dalam Proses</option>
-                <option value="Menunggu Data/Akun" ${item.status === 'Menunggu Data/Akun' ? 'selected' : ''}>📦 Menunggu Data</option>
+            <div class="flex items-center gap-1.5 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
+              <select onchange="updateItemStatus(${item.id}, this.value)" class="text-[11px] font-bold bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-slate-700 outline-none focus:border-brand-purple">
+                <option value="Dalam Proses" ${item.status === 'Dalam Proses' ? 'selected' : ''}>⏳ Proses</option>
+                <option value="Menunggu Data/Akun" ${item.status === 'Menunggu Data/Akun' ? 'selected' : ''}>📦 Tunggu</option>
                 <option value="Selesai" ${item.status === 'Selesai' ? 'selected' : ''}>✅ Selesai</option>
-                <option value="Tidak Ada Klaim" ${item.status === 'Tidak Ada Klaim' ? 'selected' : ''}>➖ Tanpa Garansi</option>
-                <option value="Ditolak" ${item.status === 'Ditolak' ? 'selected' : ''}>❌ Ditolak</option>
+                <option value="Tidak Ada Klaim" ${item.status === 'Tidak Ada Klaim' ? 'selected' : ''}>➖ Tanpa</option>
+                <option value="Ditolak" ${item.status === 'Ditolak' ? 'selected' : ''}>❌ Tolak</option>
               </select>
 
-              <button onclick="sendWarrantyWA(${item.id})" title="Kirim WA Garansi" class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 flex items-center justify-center transition hover:scale-110">
-                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+              <button onclick="sendWarrantyWA(${item.id})" title="Kirim WA Garansi" class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 flex items-center justify-center transition active:scale-95">
+                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
                   <path d="M12.031 2C6.495 2 2 6.492 2 12.028c0 1.944.555 3.766 1.516 5.308L2 22l4.82-1.469a9.98 9.98 0 005.211 1.497h.004c5.536 0 10.031-4.492 10.031-10.028 0-2.678-1.043-5.197-2.937-7.091A9.972 9.972 0 0012.031 2zm0 18.258h-.003a8.27 8.27 0 01-4.223-1.156l-.303-.18-3.138.958.976-3.056-.197-.314a8.275 8.275 0 01-1.272-4.482c0-4.568 3.717-8.285 8.288-8.285 2.213 0 4.293.863 5.858 2.428a8.232 8.232 0 012.425 5.857c0 4.568-3.717 8.285-8.286 8.285z"/>
                 </svg>
               </button>
 
               ${item.hasBonus ? `
-                <button onclick="sendBonusWA(${item.id})" title="Kirim WA Bonus" class="w-8 h-8 rounded-xl bg-purple-50 text-brand-purple hover:bg-purple-100 flex items-center justify-center transition text-xs font-bold hover:scale-110">
+                <button onclick="sendBonusWA(${item.id})" title="Kirim WA Bonus" class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-purple-50 text-brand-purple hover:bg-purple-100 flex items-center justify-center transition text-xs font-bold active:scale-95">
                   🎁
                 </button>
               ` : ''}
 
-              <button onclick="deleteItem(${item.id})" title="Hapus" class="w-8 h-8 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-100 flex items-center justify-center transition hover:scale-110">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <button onclick="deleteItem(${item.id})" title="Hapus" class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-100 flex items-center justify-center transition active:scale-95">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                 </svg>
               </button>
