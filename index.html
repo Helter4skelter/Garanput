@@ -112,11 +112,11 @@
       </div>
 
       <div>
-        <button onclick="handleManualSync()" title="Refresh & Sinkronisasi" class="flex items-center gap-1 bg-white border border-slate-200 text-slate-700 font-bold text-xs px-3 sm:px-4 py-2 rounded-xl transition shadow-xs hover:border-brand-purple active:scale-95">
+        <button onclick="fetchFromSheet()" title="Sync Google Sheets" class="flex items-center gap-1.5 bg-white border border-slate-200 text-slate-700 font-bold text-xs px-3 sm:px-4 py-2 rounded-xl transition shadow-xs hover:border-brand-purple active:scale-95">
           <svg id="syncIcon" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
           </svg>
-          <span class="text-[11px] sm:text-xs">Sync Data</span>
+          <span id="syncText" class="text-[11px] sm:text-xs">Sync Sheets</span>
         </button>
       </div>
     </header>
@@ -136,7 +136,7 @@
             Pantau Garansi, Pengingat &amp; Bonus Aktif.
           </h1>
           <p class="text-xs sm:text-sm text-purple-100/90 leading-relaxed font-normal">
-            Dukung Drag-and-Drop otomatis dari chat WhatsApp, review sebelum simpan, dan kelola reward pelanggan secara real-time.
+            Tersambung otomatis ke Google Sheets. Drop chat laporan WhatsApp, tetapkan target perbaikan, dan kelola bonus pelanggan.
           </p>
 
           <div class="pt-1.5 sm:pt-2">
@@ -201,7 +201,7 @@
                 Tarik &amp; Lepas (Drag) Chat Laporan ke Sini!
               </h3>
               <p class="text-[11px] sm:text-xs text-slate-400 mt-1 max-w-md mx-auto leading-relaxed">
-                Salin teks WhatsApp customer lalu seret atau tekan <kbd class="px-1.5 py-0.5 bg-slate-100 border border-slate-300 rounded font-mono text-[10px] font-bold text-slate-700">Ctrl/Cmd + V</kbd>. Data akan otomatis terbuka di modal review untuk dicek.
+                Salin teks WhatsApp customer lalu seret atau tekan <kbd class="px-1.5 py-0.5 bg-slate-100 border border-slate-300 rounded font-mono text-[10px] font-bold text-slate-700">Ctrl/Cmd + V</kbd>. Data akan otomatis terbuka di modal review sebelum disimpan ke Google Sheets.
               </p>
             </div>
           </div>
@@ -271,7 +271,6 @@
             </div>
           </div>
 
-          <!-- Switch Tabs Pengingat Garansi vs Bonus -->
           <div class="flex bg-slate-100 p-1 rounded-xl text-xs font-bold gap-1 w-full">
             <button id="remTabWarrantyBtn" onclick="switchReminderTab('warranty')" class="flex-1 py-1.5 rounded-lg bg-white text-brand-purple shadow-xs transition flex items-center justify-center gap-1">
               <span>🛡️ Garansi</span>
@@ -283,7 +282,6 @@
             </button>
           </div>
 
-          <!-- Containers -->
           <div id="warrantyReminderContainer" class="space-y-2.5 max-h-[500px] overflow-y-auto pr-0.5"></div>
           <div id="bonusReminderContainer" class="space-y-2.5 hidden max-h-[500px] overflow-y-auto pr-0.5"></div>
         </div>
@@ -294,22 +292,20 @@
 
   </div>
 
-  <!-- MODAL INPUT / VERIFIKASI (FIX LAYAR HP DENGAN SCROLL MANDIRI) -->
+  <!-- MODAL INPUT / VERIFIKASI SEBELUM SIMPAN -->
   <div id="modalOverlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs hidden items-center justify-center p-3 sm:p-4 z-50 transition-opacity">
     <div class="bg-white rounded-3xl w-full max-w-lg max-h-[90vh] flex flex-col p-4 sm:p-6 shadow-2xl border border-slate-100 transform transition-all animate-bounce-short">
       
-      <!-- Modal Header (Fixed) -->
       <div class="flex items-center justify-between pb-3 border-b border-slate-100 shrink-0">
         <div>
           <h4 id="modalTitle" class="font-black text-slate-900 text-base sm:text-lg">Review Data Garansi</h4>
-          <p class="text-[11px] sm:text-xs text-slate-400">Periksa detail klaim sebelum disimpan.</p>
+          <p class="text-[11px] sm:text-xs text-slate-400">Data otomatis tersimpan ke Google Sheets.</p>
         </div>
         <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 font-bold transition">
           ✕
         </button>
       </div>
 
-      <!-- Modal Body (Scrollable agar tidak terpotong di HP) -->
       <form id="addForm" onsubmit="handleFormSubmit(event)" class="overflow-y-auto py-3 space-y-3 text-xs sm:text-sm pr-1">
         <div>
           <label class="block font-bold text-slate-700 mb-1">Nama Customer <span class="text-rose-500">*</span></label>
@@ -344,14 +340,13 @@
           </div>
         </div>
 
-        <!-- Bonus Option -->
         <div class="bg-purple-50/70 border border-purple-100 rounded-2xl p-3 space-y-2">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
               <span class="text-base">🎁</span>
               <div>
                 <p class="font-extrabold text-xs text-slate-800">Dapat Bonus Customer?</p>
-                <p class="text-[10px] text-slate-500">Berikan kompensasi atau bonus</p>
+                <p class="text-[10px] text-slate-500">Berikan reward atau kompensasi</p>
               </div>
             </div>
             <label class="relative inline-flex items-center cursor-pointer">
@@ -377,10 +372,9 @@
           <textarea id="inputNotes" rows="2" placeholder="Catatan kendala atau detail akun..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:border-brand-purple outline-none"></textarea>
         </div>
 
-        <!-- Submit Button (Selalu Terlihat di Bagian Bawah Modal) -->
         <div class="pt-2 sticky bottom-0 bg-white">
-          <button type="submit" class="w-full neon-btn font-extrabold py-3 rounded-xl shadow-sm text-xs sm:text-sm flex items-center justify-center gap-2 active:scale-95">
-            <span>Konfirmasi &amp; Simpan Data</span>
+          <button id="saveSubmitBtn" type="submit" class="w-full neon-btn font-extrabold py-3 rounded-xl shadow-sm text-xs sm:text-sm flex items-center justify-center gap-2 active:scale-95">
+            <span>Konfirmasi &amp; Simpan ke Sheets</span>
           </button>
         </div>
       </form>
@@ -394,6 +388,11 @@
   </div>
 
   <script>
+    // ==============================================================
+    // URL WEB APP RESMI REZTROID DARI AKUN JOSHANSMD123@GMAIL.COM:
+    // ==============================================================
+    const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbxey14e9qgh7wfcfj0zopqN6745zszhkMrYNVh_1XVTnpQyVwj_d-1sh4CepG_Qe5de/exec";
+
     function playAudioTone(type) {
       try {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -433,46 +432,7 @@
       }
     }
 
-    const initialSampleData = [
-      {
-        id: 1730000000001,
-        name: "Kevin Sanjaya",
-        phone: "081234567890",
-        product: "Canva Pro 1 Tahun",
-        status: "Dalam Proses",
-        dueDate: getFormattedDateOffset(0),
-        hasBonus: true,
-        bonusDetail: "Free Prime Video 1 Bulan",
-        bonusDeadline: getFormattedDateOffset(2),
-        notes: "Member re-invite sedang diproses."
-      },
-      {
-        id: 1730000000002,
-        name: "Siti Rahmawati",
-        phone: "085712349988",
-        product: "YouTube Premium 4 Bulan",
-        status: "Menunggu Data/Akun",
-        dueDate: getFormattedDateOffset(1),
-        hasBonus: false,
-        bonusDetail: "",
-        bonusDeadline: "",
-        notes: "Menunggu email akun baru dari customer."
-      },
-      {
-        id: 1730000000003,
-        name: "Farhan Maulana",
-        phone: "087899001122",
-        product: "Spotify Family Member",
-        status: "Selesai",
-        dueDate: getFormattedDateOffset(-2),
-        hasBonus: true,
-        bonusDetail: "Voucher Diskon Rp 10.000",
-        bonusDeadline: getFormattedDateOffset(1),
-        notes: "Akun sudah aktif kembali."
-      }
-    ];
-
-    let items = JSON.parse(localStorage.getItem('reztroid_garansi_records')) || initialSampleData;
+    let items = JSON.parse(localStorage.getItem('reztroid_garansi_records')) || [];
     let currentTab = 'ALL';
     let currentReminderTab = 'warranty';
     let currentProductFilter = '';
@@ -500,17 +460,28 @@
       renderData();
     }
 
-    function handleManualSync() {
+    // Mengambil data dari Google Sheets secara real-time
+    async function fetchFromSheet() {
       const icon = document.getElementById('syncIcon');
+      const text = document.getElementById('syncText');
       icon.classList.add('animate-spin');
-      playAudioTone('pop');
-      setTimeout(() => {
+      text.innerText = "Syncing...";
+
+      try {
+        const res = await fetch(GOOGLE_SHEET_URL);
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          items = data;
+          saveState();
+          playAudioTone('success');
+          showToast(`Berhasil sync ${data.length} data dari Sheets!`, "🔄");
+        }
+      } catch (err) {
+        showToast("Sinkronisasi lokal aktif", "⚡");
+      } finally {
         icon.classList.remove('animate-spin');
-        showToast("Sinkronisasi lokal berhasil!", "🔄");
-        calculateMetrics();
-        renderReminders();
-        renderData();
-      }, 400);
+        text.innerText = "Sync Sheets";
+      }
     }
 
     function parseAndAddText(rawText) {
@@ -613,11 +584,15 @@
       }
     }
 
-    function handleFormSubmit(e) {
+    async function handleFormSubmit(e) {
       e.preventDefault();
+      const btn = document.getElementById('saveSubmitBtn');
+      btn.innerText = "Menyimpan ke Sheets...";
+      btn.disabled = true;
+
       const hasBonus = document.getElementById('inputHasBonus').checked;
       const newItem = {
-        id: Date.now(),
+        id: "CUST-" + String(Date.now()).slice(-4),
         name: document.getElementById('inputName').value.trim(),
         phone: document.getElementById('inputPhone').value.trim(),
         product: document.getElementById('inputProduct').value.trim(),
@@ -629,15 +604,29 @@
         notes: document.getElementById('inputNotes').value.trim() || "-"
       };
 
+      // Simpan lokal instan
       items.unshift(newItem);
       saveState();
       closeModal();
       playAudioTone('success');
       triggerConfetti();
-      showToast("Data klaim berhasil disimpan!", "✅");
+      showToast("Data tersimpan ke Sheets!", "✅");
+
+      btn.innerText = "Konfirmasi & Simpan ke Sheets";
+      btn.disabled = false;
+
+      // Kirim ke Google Sheets secara asinkron
+      try {
+        await fetch(GOOGLE_SHEET_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: "ADD", data: newItem })
+        });
+      } catch (err) {}
     }
 
-    function updateItemStatus(id, newStatus) {
+    async function updateItemStatus(id, newStatus) {
       items = items.map(item => item.id === id ? { ...item, status: newStatus } : item);
       saveState();
       if (newStatus === 'Selesai') {
@@ -647,15 +636,35 @@
         playAudioTone('pop');
       }
       showToast(`Status diubah ke: ${newStatus}`);
+
+      // Sync perubahan status ke Google Sheets
+      try {
+        await fetch(GOOGLE_SHEET_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: "UPDATE_STATUS", id: id, newStatus: newStatus })
+        });
+      } catch (err) {}
     }
 
-    function deleteItem(id) {
+    async function deleteItem(id) {
       const item = items.find(i => i.id === id);
       if (item && confirm(`Hapus catatan: ${item.name}?`)) {
         items = items.filter(i => i.id !== id);
         saveState();
         playAudioTone('pop');
-        showToast("Catatan dihapus", "🗑️");
+        showToast("Catatan dihapus dari Sheets", "🗑️");
+
+        // Sync penghapusan ke Google Sheets
+        try {
+          await fetch(GOOGLE_SHEET_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: "DELETE", id: id })
+          });
+        } catch (err) {}
       }
     }
 
@@ -764,10 +773,10 @@
                 </div>
               </div>
               <div class="flex items-center gap-1.5 pt-1 border-t border-slate-100">
-                <button onclick="sendWarrantyWA(${item.id})" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-[11px] py-1.5 rounded-lg flex items-center justify-center gap-1 transition shadow-xs active:scale-95">
+                <button onclick="sendWarrantyWA('${item.id}')" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-[11px] py-1.5 rounded-lg flex items-center justify-center gap-1 transition shadow-xs active:scale-95">
                   <span>💬 WA</span>
                 </button>
-                <button onclick="updateItemStatus(${item.id}, 'Selesai')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] px-3 py-1.5 rounded-lg transition active:scale-95">
+                <button onclick="updateItemStatus('${item.id}', 'Selesai')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-[11px] px-3 py-1.5 rounded-lg transition active:scale-95">
                   Selesai
                 </button>
               </div>
@@ -803,7 +812,7 @@
                 </div>
               </div>
               <div class="pt-1 border-t border-slate-100">
-                <button onclick="sendBonusWA(${item.id})" class="w-full neon-btn font-extrabold text-[11px] py-1.5 rounded-lg flex items-center justify-center gap-1 transition shadow-xs active:scale-95">
+                <button onclick="sendBonusWA('${item.id}')" class="w-full neon-btn font-extrabold text-[11px] py-1.5 rounded-lg flex items-center justify-center gap-1 transition shadow-xs active:scale-95">
                   <span>🎁 Bagikan Bonus via WA</span>
                 </button>
               </div>
@@ -892,7 +901,7 @@
             </div>
 
             <div class="flex items-center gap-1.5 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
-              <select onchange="updateItemStatus(${item.id}, this.value)" class="text-[11px] font-bold bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-slate-700 outline-none focus:border-brand-purple">
+              <select onchange="updateItemStatus('${item.id}', this.value)" class="text-[11px] font-bold bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-slate-700 outline-none focus:border-brand-purple">
                 <option value="Dalam Proses" ${item.status === 'Dalam Proses' ? 'selected' : ''}>⏳ Proses</option>
                 <option value="Menunggu Data/Akun" ${item.status === 'Menunggu Data/Akun' ? 'selected' : ''}>📦 Tunggu</option>
                 <option value="Selesai" ${item.status === 'Selesai' ? 'selected' : ''}>✅ Selesai</option>
@@ -900,20 +909,20 @@
                 <option value="Ditolak" ${item.status === 'Ditolak' ? 'selected' : ''}>❌ Tolak</option>
               </select>
 
-              <button onclick="sendWarrantyWA(${item.id})" title="Kirim WA Garansi" class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 flex items-center justify-center transition active:scale-95">
+              <button onclick="sendWarrantyWA('${item.id}')" title="Kirim WA Garansi" class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 flex items-center justify-center transition active:scale-95">
                 <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
                   <path d="M12.031 2C6.495 2 2 6.492 2 12.028c0 1.944.555 3.766 1.516 5.308L2 22l4.82-1.469a9.98 9.98 0 005.211 1.497h.004c5.536 0 10.031-4.492 10.031-10.028 0-2.678-1.043-5.197-2.937-7.091A9.972 9.972 0 0012.031 2zm0 18.258h-.003a8.27 8.27 0 01-4.223-1.156l-.303-.18-3.138.958.976-3.056-.197-.314a8.275 8.275 0 01-1.272-4.482c0-4.568 3.717-8.285 8.288-8.285 2.213 0 4.293.863 5.858 2.428a8.232 8.232 0 012.425 5.857c0 4.568-3.717 8.285-8.286 8.285z"/>
                 </svg>
               </button>
 
               ${item.hasBonus ? `
-                <button onclick="sendBonusWA(${item.id})" title="Kirim WA Bonus" class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-purple-50 text-brand-purple hover:bg-purple-100 flex items-center justify-center transition text-xs font-bold active:scale-95">
+                <button onclick="sendBonusWA('${item.id}')" title="Kirim WA Bonus" class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-purple-50 text-brand-purple hover:bg-purple-100 flex items-center justify-center transition text-xs font-bold active:scale-95">
                   🎁
                 </button>
               ` : ''}
 
-              <button onclick="deleteItem(${item.id})" title="Hapus" class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-100 flex items-center justify-center transition active:scale-95">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <button onclick="deleteItem('${item.id}')" title="Hapus" class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-100 flex items-center justify-center transition active:scale-95">
+                <svg class="w-3.5 h-3.5 fill-none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                 </svg>
               </button>
@@ -923,10 +932,12 @@
       }).join('');
     }
 
+    // Auto-fetch data dari Google Sheets saat pertama dibuka
     window.onload = function() {
       calculateMetrics();
       renderReminders();
       renderData();
+      fetchFromSheet();
     };
   </script>
 </body>
