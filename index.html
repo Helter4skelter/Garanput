@@ -90,7 +90,36 @@
 </head>
 <body class="font-sans text-slate-800 antialiased min-h-screen pb-24 selection:bg-brand-purple selection:text-white">
 
-  <div class="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-4 sm:pt-6 space-y-4 sm:space-y-6">
+  <!-- MODAL KUNCI PIN KEAMANAN (AUTO POP-UP JIKA BELUM LOGIN) -->
+  <div id="pinOverlay" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-3xl w-full max-w-sm p-6 sm:p-7 shadow-2xl border border-slate-100 text-center space-y-4">
+      <div class="w-14 h-14 rounded-2xl bg-purple-50 text-brand-purple flex items-center justify-center text-2xl mx-auto shadow-inner">
+        🔒
+      </div>
+      <div>
+        <h3 class="font-black text-slate-900 text-lg">reztroid® Security</h3>
+        <p class="text-xs text-slate-400 mt-1">Masukkan PIN Admin untuk mengakses database.</p>
+      </div>
+
+      <form onsubmit="handlePinSubmit(event)" class="space-y-3 pt-1">
+        <input 
+          type="password" 
+          id="inputPin" 
+          maxlength="8" 
+          placeholder="••••" 
+          autofocus
+          class="w-full text-center text-2xl tracking-widest font-black bg-slate-50 border-2 border-slate-200 focus:border-brand-purple rounded-2xl py-3 text-slate-900 outline-none transition"
+        >
+        <p id="pinErrorMsg" class="text-rose-500 font-bold text-xs hidden">PIN salah! Silakan coba lagi.</p>
+        <button type="submit" class="w-full neon-btn font-extrabold py-3.5 rounded-xl shadow-md text-xs sm:text-sm active:scale-95">
+          Buka Dashboard
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- DASHBOARD WRAPPER -->
+  <div id="mainDashboard" class="opacity-0 pointer-events-none transition-opacity duration-300 max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-4 sm:pt-6 space-y-4 sm:space-y-6">
     
     <!-- Header Navigasi -->
     <header class="bg-white rounded-2xl px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between shadow-xs border border-slate-150">
@@ -107,10 +136,10 @@
       </div>
 
       <div class="flex items-center gap-2">
-        <a href="https://docs.google.com/spreadsheets/d/1KbrfK6j-5ZDkWgxsSF39UnrXJ4PoP8eNqLXqcpCLNW8/edit" target="_blank" class="hidden sm:flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold text-xs px-3.5 py-2 rounded-xl hover:bg-emerald-100 transition shadow-xs">
-          <span>📊</span>
-          <span>Buka Sheets ↗</span>
-        </a>
+        <button onclick="lockDashboard()" title="Kunci Dashboard" class="bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs px-3 py-2 rounded-xl transition shadow-xs flex items-center gap-1">
+          <span>🔒</span>
+          <span class="hidden sm:inline">Kunci</span>
+        </button>
         <button onclick="fetchFromSheet()" title="Sync Google Sheets" class="flex items-center gap-1.5 bg-white border border-slate-200 text-slate-700 font-bold text-xs px-3.5 sm:px-4 py-2 rounded-xl transition shadow-xs hover:border-brand-purple active:scale-95">
           <svg id="syncIcon" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
@@ -388,7 +417,11 @@
   </div>
 
   <script>
+    // URL Web App Resmi dari deployment baru:
     const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbwd6jbRKTJbBH4Q8l8G_rQFOP0uZV_g7COgQbm4pBqV2GbcBUjmjBo6v_mVDj6Ce8qs/exec";
+    
+    // PIN
+    const ADMIN_PIN = "090925";
 
     function playAudioTone(type) {
       try {
@@ -429,6 +462,65 @@
       }
     }
 
+    // ==========================================
+    // SISTEM KEAMANAN & AUTENTIKASI PIN
+    // ==========================================
+    function checkAuthOnLoad() {
+      const isAuth = sessionStorage.getItem("reztroid_admin_auth");
+      if (isAuth === "true") {
+        unlockDashboardUI();
+        calculateMetrics();
+        renderReminders();
+        renderData();
+        fetchFromSheet();
+      } else {
+        document.getElementById("pinOverlay").classList.remove("hidden");
+        document.getElementById("inputPin").focus();
+      }
+    }
+
+    function handlePinSubmit(e) {
+      e.preventDefault();
+      const enteredPin = document.getElementById("inputPin").value.trim();
+      const err = document.getElementById("pinErrorMsg");
+
+      if (enteredPin === ADMIN_PIN) {
+        sessionStorage.setItem("reztroid_admin_auth", "true");
+        err.classList.add("hidden");
+        playAudioTone("success");
+        triggerConfetti();
+        unlockDashboardUI();
+        calculateMetrics();
+        renderReminders();
+        renderData();
+        fetchFromSheet();
+      } else {
+        playAudioTone("pop");
+        err.classList.remove("hidden");
+        document.getElementById("inputPin").value = "";
+        document.getElementById("inputPin").focus();
+      }
+    }
+
+    function unlockDashboardUI() {
+      document.getElementById("pinOverlay").classList.add("hidden");
+      const dash = document.getElementById("mainDashboard");
+      dash.classList.remove("opacity-0", "pointer-events-none");
+    }
+
+    function lockDashboard() {
+      sessionStorage.removeItem("reztroid_admin_auth");
+      document.getElementById("mainDashboard").classList.add("opacity-0", "pointer-events-none");
+      document.getElementById("pinOverlay").classList.remove("hidden");
+      document.getElementById("inputPin").value = "";
+      document.getElementById("pinErrorMsg").classList.add("hidden");
+      document.getElementById("inputPin").focus();
+      showToast("Dashboard terkunci!", "🔒");
+    }
+
+    // ==========================================
+    // DATA & STATE MANAGEMENT
+    // ==========================================
     let items = JSON.parse(localStorage.getItem('reztroid_garansi_records')) || [];
     let currentTab = 'ALL';
     let currentReminderTab = 'warranty';
@@ -904,11 +996,9 @@
       }).join('');
     }
 
+    // Eksekusi cek keamanan saat browser dimuat
     window.onload = function() {
-      calculateMetrics();
-      renderReminders();
-      renderData();
-      fetchFromSheet();
+      checkAuthOnLoad();
     };
   </script>
 </body>
