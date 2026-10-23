@@ -4,56 +4,65 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>reztroid® - Garansi & Bonus Management Dashboard</title>
-  <!-- Google Fonts: Inter -->
+  
+  <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <!-- Tailwind CSS CDN -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Canvas Confetti Library untuk Selebrasi -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
   <script>
     tailwind.config = {
       theme: {
         extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-          },
+          fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
           colors: {
             brand: {
               purple: '#6d4df6',
               purpleDark: '#5635e8',
-              lime: '#bdf529',
+              lime: '#bef724',
               limeHover: '#a7e31b',
               lightPurple: '#f4f0ff',
               pillPurple: '#ece5ff',
               pillText: '#6845f5'
+            }
+          },
+          animation: {
+            'bounce-short': 'bounceShort 0.5s ease-in-out 1',
+            'pulse-glow': 'pulseGlow 2s infinite',
+          },
+          keyframes: {
+            bounceShort: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-6px)' }
+            },
+            pulseGlow: {
+              '0%, 100%': { opacity: '0.6', transform: 'scale(1)' },
+              '50%': { opacity: '1', transform: 'scale(1.03)' }
             }
           }
         }
       }
     }
   </script>
+
   <style>
-    body {
-      background-color: #f7f9fc;
-    }
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #f1f5f9;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 999px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #94a3b8;
-    }
+    body { background-color: #f7f9fc; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    
     .hero-gradient {
       background: linear-gradient(135deg, #7451f8 0%, #5d36f5 60%, #4b23e8 100%);
       box-shadow: 0 20px 40px -15px rgba(109, 77, 246, 0.45);
     }
+
     .neon-btn {
       background-color: #bef724;
       color: #0d0f12;
@@ -61,123 +70,167 @@
     }
     .neon-btn:hover {
       background-color: #abeb0c;
-      transform: translateY(-1px);
-      box-shadow: 0 8px 20px -4px rgba(190, 247, 36, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px -4px rgba(190, 247, 36, 0.5);
     }
-    .neon-btn:active {
-      transform: translateY(0);
+    .neon-btn:active { transform: translateY(0); }
+
+    .drop-active {
+      border-color: #bef724 !important;
+      background: rgba(109, 77, 246, 0.08) !important;
+      transform: scale(1.02);
+      box-shadow: 0 0 30px rgba(190, 247, 36, 0.35) !important;
+    }
+
+    .card-hover {
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card-hover:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px -8px rgba(15, 23, 42, 0.08);
+      border-color: #c7d2fe;
     }
   </style>
 </head>
-<body class="font-sans text-slate-800 antialiased min-h-screen pb-16">
+<body class="font-sans text-slate-800 antialiased min-h-screen pb-20 selection:bg-brand-purple selection:text-white">
 
-  <!-- Main Container Wrapper -->
-  <div class="max-w-4xl mx-auto px-4 sm:px-6 pt-5">
+  <!-- Main Container -->
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 pt-5 space-y-6">
     
-    <!-- Top Navigation Header -->
-    <header class="bg-white rounded-2xl px-5 py-3.5 mb-5 flex items-center justify-between shadow-sm border border-slate-100">
+    <!-- Top Bar Navigation -->
+    <header class="bg-white rounded-2xl px-5 py-3.5 flex items-center justify-between shadow-sm border border-slate-100/80 backdrop-blur-md">
       <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-xl bg-brand-purple flex items-center justify-center text-white font-black text-xl shadow-md shadow-brand-purple/30">
+        <div class="w-10 h-10 rounded-xl bg-brand-purple flex items-center justify-center text-white font-black text-xl shadow-md shadow-brand-purple/30 transform hover:rotate-6 transition cursor-pointer">
           R
         </div>
         <div class="flex items-center gap-2">
           <span class="text-xl font-extrabold text-slate-900 tracking-tight">reztroid<span class="text-xs text-slate-400 font-normal ml-0.5">®</span></span>
-          <span class="bg-brand-pillPurple text-brand-pillText text-[10px] font-bold px-2.5 py-0.5 rounded-full tracking-wider uppercase">
+          <span class="bg-brand-pillPurple text-brand-pillText text-[10px] font-bold px-2.5 py-0.5 rounded-full tracking-wider uppercase animate-pulse">
             ADMIN DASHBOARD
           </span>
         </div>
       </div>
 
       <div class="flex items-center gap-2">
-        <button onclick="handleRefresh()" class="flex items-center gap-1.5 bg-white border border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300 font-semibold text-xs px-3.5 py-2 rounded-xl transition shadow-xs">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button onclick="handleManualSync()" title="Refresh & Sinkronisasi" class="flex items-center gap-1.5 bg-white border border-slate-200 text-slate-600 hover:text-slate-900 font-bold text-xs px-3.5 py-2 rounded-xl transition shadow-xs hover:border-brand-purple">
+          <svg id="syncIcon" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
           </svg>
-          Refresh
+          Sync Data
         </button>
       </div>
     </header>
 
-    <!-- Main Hero Banner -->
-    <div class="hero-gradient rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden mb-7">
-      <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+    <!-- Hero Card Banner -->
+    <div class="hero-gradient rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden">
+      <!-- Glow element -->
+      <div class="absolute -right-12 -bottom-12 w-72 h-72 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute top-0 right-1/4 w-32 h-32 bg-[#bef724]/20 rounded-full blur-2xl pointer-events-none"></div>
 
-      <div class="inline-flex items-center gap-1.5 bg-white/20 backdrop-blur-md border border-white/25 px-3 py-1 rounded-full text-xs font-semibold text-white/95 mb-4">
-        <span>🛡️</span>
-        <span class="tracking-wide uppercase text-[11px]">MANAJEMEN GARANSI &amp; BONUS</span>
-      </div>
-
-      <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight mb-2">
-        Pantau Garansi, Pengingat &amp; Bonus Aktif.
-      </h1>
-      <p class="text-xs sm:text-sm text-purple-100/90 max-w-xl mb-6 font-normal">
-        Kelola klaim garansi dalam proses, follow-up WhatsApp terjadwal, dan pencatatan riwayat bonus loyalitas customer secara real-time.
-      </p>
-
-      <button onclick="openModal()" class="w-full neon-btn font-extrabold text-sm sm:text-base py-3.5 px-6 rounded-2xl flex items-center justify-center gap-2 mb-6 cursor-pointer">
-        <span class="text-lg leading-none">+</span>
-        <span>Tambah Garansi / Bonus</span>
-      </button>
-
-      <!-- Metrics Summary Sub-card -->
-      <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-5 border border-white/20 grid grid-cols-2 sm:grid-cols-4 gap-4 divide-y sm:divide-y-0 sm:divide-x divide-white/15">
-        <div class="pt-2 sm:pt-0">
-          <p class="text-[10px] uppercase font-bold tracking-wider text-purple-200 mb-1">DALAM PROSES</p>
-          <div class="flex items-baseline gap-1.5">
-            <span id="statInProcess" class="text-xl sm:text-2xl font-black text-white">0</span>
-            <span class="text-[11px] text-purple-200">Klaim</span>
-          </div>
+      <div class="relative z-10">
+        <!-- Top Pill -->
+        <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md border border-white/25 px-3.5 py-1 rounded-full text-xs font-semibold text-white/95 mb-4">
+          <span class="inline-block w-2 h-2 rounded-full bg-[#bef724] animate-ping"></span>
+          <span class="tracking-wide uppercase text-[10px] font-black">SISTEM GARANSI & BONUS AKTIF</span>
         </div>
 
-        <div class="pt-2 sm:pt-0 sm:pl-4">
-          <p class="text-[10px] uppercase font-bold tracking-wider text-amber-200 mb-1">PERLU TINDAKAN</p>
-          <div class="flex items-baseline gap-1.5">
-            <span id="statUrgent" class="text-xl sm:text-2xl font-black text-amber-300">0</span>
-            <span class="text-[11px] text-amber-100">Klaim</span>
-          </div>
-        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight mb-2">
+          Pantau Garansi, Pengingat &amp; Bonus Aktif.
+        </h1>
+        <p class="text-xs sm:text-sm text-purple-100/90 max-w-xl mb-6 font-normal">
+          Dukung Drag-and-Drop otomatis dari chat WhatsApp, follow-up satu klik, serta pembagian reward pelanggan.
+        </p>
 
-        <div class="pt-2 sm:pt-0 sm:pl-4">
-          <p class="text-[10px] uppercase font-bold tracking-wider text-lime-200 mb-1">TOTAL BONUS</p>
-          <div class="flex items-baseline gap-1.5">
-            <span id="statBonusCount" class="text-xl sm:text-2xl font-black text-[#bef724]">0</span>
-            <span class="text-[11px] text-lime-200">Customer</span>
-          </div>
-        </div>
+        <!-- Main Lime CTA Button -->
+        <button onclick="openModal()" class="w-full neon-btn font-extrabold text-sm sm:text-base py-3.5 px-6 rounded-2xl flex items-center justify-center gap-2 mb-6 cursor-pointer shadow-lg">
+          <span class="text-xl leading-none font-black">+</span>
+          <span>Tambah Garansi / Bonus Manual</span>
+        </button>
 
-        <div class="pt-2 sm:pt-0 sm:pl-4">
-          <p class="text-[10px] uppercase font-bold tracking-wider text-purple-200 mb-1">SELESAI</p>
-          <div class="flex items-baseline gap-1.5">
-            <span id="statDone" class="text-xl sm:text-2xl font-black text-white">0</span>
-            <span class="text-[11px] text-purple-200">Klaim</span>
+        <!-- Metric Counter Grid -->
+        <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-5 border border-white/20 grid grid-cols-2 sm:grid-cols-4 gap-4 divide-y sm:divide-y-0 sm:divide-x divide-white/15">
+          <div class="pt-2 sm:pt-0">
+            <p class="text-[10px] uppercase font-black tracking-wider text-purple-200 mb-1">DALAM PROSES</p>
+            <div class="flex items-baseline gap-1.5">
+              <span id="statInProcess" class="text-2xl sm:text-3xl font-black text-white">0</span>
+              <span class="text-[11px] text-purple-200 font-medium">Klaim</span>
+            </div>
+          </div>
+
+          <div class="pt-2 sm:pt-0 sm:pl-4">
+            <p class="text-[10px] uppercase font-black tracking-wider text-amber-200 mb-1">PERLU TINDAKAN</p>
+            <div class="flex items-baseline gap-1.5">
+              <span id="statUrgent" class="text-2xl sm:text-3xl font-black text-amber-300">0</span>
+              <span class="text-[11px] text-amber-100 font-medium">Klaim</span>
+            </div>
+          </div>
+
+          <div class="pt-2 sm:pt-0 sm:pl-4">
+            <p class="text-[10px] uppercase font-black tracking-wider text-lime-200 mb-1">TOTAL BONUS</p>
+            <div class="flex items-baseline gap-1.5">
+              <span id="statBonusCount" class="text-2xl sm:text-3xl font-black text-[#bef724]">0</span>
+              <span class="text-[11px] text-lime-200 font-medium">Customer</span>
+            </div>
+          </div>
+
+          <div class="pt-2 sm:pt-0 sm:pl-4">
+            <p class="text-[10px] uppercase font-black tracking-wider text-purple-200 mb-1">SELESAI</p>
+            <div class="flex items-baseline gap-1.5">
+              <span id="statDone" class="text-2xl sm:text-3xl font-black text-white">0</span>
+              <span class="text-[11px] text-purple-200 font-medium">Klaim</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Section: Dual Reminder (Terpisah Tab Garansi & Bonus) -->
-    <div class="mb-7">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+    <!-- INTERACTIVE MAGIC DROP ZONE (DRAG & DROP + SMART PASTE) -->
+    <div id="dropZone" class="group relative bg-white rounded-3xl p-6 border-2 border-dashed border-brand-purple/40 hover:border-brand-purple transition-all duration-300 shadow-sm cursor-pointer overflow-hidden text-center">
+      <div class="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-indigo-500/5 opacity-0 group-hover:opacity-100 transition duration-300"></div>
+      
+      <div class="relative z-10 flex flex-col items-center justify-center space-y-2">
+        <div id="dropIcon" class="w-14 h-14 rounded-2xl bg-purple-50 text-brand-purple flex items-center justify-center text-3xl font-black group-hover:scale-110 group-hover:rotate-6 transition transform">
+          📥
+        </div>
         <div>
-          <h2 class="text-lg font-bold text-slate-900 tracking-tight">Daftar Pengingat</h2>
+          <h3 class="font-extrabold text-sm sm:text-base text-slate-800">
+            Tarik &amp; Lepas (Drag) Chat Laporan ke Sini!
+          </h3>
+          <p class="text-xs text-slate-400 mt-1 max-w-md mx-auto leading-relaxed">
+            Blok teks format laporan customer dari WhatsApp lalu seret ke kotak ini, atau cukup tekan shortcut <kbd class="px-2 py-0.5 bg-slate-100 border border-slate-300 rounded-md font-mono text-[11px] font-bold text-slate-700 shadow-2xs">Ctrl + V</kbd> / <kbd class="px-2 py-0.5 bg-slate-100 border border-slate-300 rounded-md font-mono text-[11px] font-bold text-slate-700 shadow-2xs">Cmd + V</kbd>.
+          </p>
+        </div>
+        <div class="pt-1 flex items-center gap-1.5 text-[11px] font-bold text-brand-purple bg-purple-50 px-3 py-1 rounded-full">
+          <span>⚡ Auto-Parsing Nama, HP, Produk &amp; Kendala</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION: PENGINGAT TERPISAH (TAB DUAL DENGAN COUNTER BADGE) -->
+    <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-100 space-y-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+        <div>
+          <h2 class="text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+            <span>🔔</span> Daftar Pengingat Tindakan
+          </h2>
           <div class="flex items-center gap-2 text-xs text-slate-500 mt-0.5">
-            <span>Perlu Diingatkan:</span>
-            <span id="activeReminderCountBadge" class="bg-purple-100 text-brand-purple font-bold px-2 py-0.5 rounded-full text-xs">
+            <span>Perlu Diingatkan Segera:</span>
+            <span id="activeReminderCountBadge" class="bg-purple-100 text-brand-purple font-black px-2.5 py-0.5 rounded-full text-xs animate-bounce-short">
               0
             </span>
             <span>Pelanggan</span>
           </div>
         </div>
 
-        <!-- Switch Tab Pengingat -->
-        <div class="flex bg-slate-200/60 p-1 rounded-xl text-xs font-bold gap-1 self-start sm:self-auto">
-          <button id="remTabWarrantyBtn" onclick="switchReminderTab('warranty')" class="px-3 py-1.5 rounded-lg bg-white text-brand-purple shadow-xs transition flex items-center gap-1.5">
+        <!-- Tab Buttons Switcher -->
+        <div class="flex bg-slate-100 p-1 rounded-2xl text-xs font-bold gap-1 self-start sm:self-auto">
+          <button id="remTabWarrantyBtn" onclick="switchReminderTab('warranty')" class="px-3.5 py-2 rounded-xl bg-white text-brand-purple shadow-sm transition flex items-center gap-1.5">
             <span>🛡️ Garansi (H-1)</span>
-            <span id="wCount" class="bg-purple-100 text-brand-purple px-1.5 py-0.2 rounded-full text-[10px]">0</span>
+            <span id="wCount" class="bg-purple-100 text-brand-purple px-2 py-0.5 rounded-full text-[10px] font-black">0</span>
           </button>
-          <button id="remTabBonusBtn" onclick="switchReminderTab('bonus')" class="px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
+          <button id="remTabBonusBtn" onclick="switchReminderTab('bonus')" class="px-3.5 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5">
             <span>🎁 Bonus Jatuh Tempo</span>
-            <span id="bCount" class="bg-slate-300/70 text-slate-700 px-1.5 py-0.2 rounded-full text-[10px]">0</span>
+            <span id="bCount" class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full text-[10px] font-black">0</span>
           </button>
         </div>
       </div>
@@ -189,140 +242,191 @@
       <div id="bonusReminderContainer" class="space-y-3 hidden"></div>
     </div>
 
-    <!-- Section: Daftar & Filter Lengkap -->
-    <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-100">
+    <!-- SECTION: DAFTAR KELOLA & FILTER LENGKAP -->
+    <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-100 space-y-4">
       
-      <!-- Top Bar: Filter & Search -->
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-5 pb-4 border-b border-slate-100">
+      <!-- Search & Header Bar -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-slate-100">
         <div>
           <h3 class="font-extrabold text-slate-900 text-base">Semua Catatan Garansi &amp; Bonus</h3>
-          <p class="text-xs text-slate-400">Pilih status untuk menyaring atau cari berdasarkan nama/nomor HP.</p>
+          <p class="text-xs text-slate-400">Pencarian instan dan quick filter kategori produk.</p>
         </div>
 
-        <!-- Search Bar -->
-        <div class="relative w-full md:w-64">
+        <div class="relative w-full md:w-72">
           <input 
             type="text" 
             id="searchInput" 
             oninput="renderData()" 
-            placeholder="Cari nama atau produk..."
-            class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 pl-9 text-xs text-slate-800 focus:outline-none focus:border-brand-purple focus:ring-1 focus:ring-brand-purple transition"
+            placeholder="Ketik nama, no HP, atau produk..."
+            class="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-2.5 pl-10 text-xs text-slate-800 focus:outline-none focus:border-brand-purple focus:bg-white transition"
           >
-          <svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
           </svg>
         </div>
       </div>
 
-      <!-- Filter Tabs -->
-      <div class="flex items-center gap-1.5 overflow-x-auto pb-3 mb-4 text-xs font-semibold no-scrollbar">
-        <button onclick="setTabFilter('ALL')" id="tab-ALL" class="tab-btn px-3 py-1.5 rounded-xl transition bg-slate-900 text-white whitespace-nowrap">Semua Status</button>
-        <button onclick="setTabFilter('PROSES')" id="tab-PROSES" class="tab-btn px-3 py-1.5 rounded-xl transition bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">⏳ Dalam Proses</button>
-        <button onclick="setTabFilter('MENUNGGU')" id="tab-MENUNGGU" class="tab-btn px-3 py-1.5 rounded-xl transition bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">📦 Menunggu Data</button>
-        <button onclick="setTabFilter('BONUS')" id="tab-BONUS" class="tab-btn px-3 py-1.5 rounded-xl transition bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">🎁 Dapat Bonus</button>
-        <button onclick="setTabFilter('SELESAI')" id="tab-SELESAI" class="tab-btn px-3 py-1.5 rounded-xl transition bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">✅ Selesai</button>
+      <!-- Status Filters Tabs -->
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-2 text-xs font-semibold no-scrollbar">
+        <button onclick="setTabFilter('ALL')" id="tab-ALL" class="tab-btn px-3.5 py-1.5 rounded-xl transition bg-slate-900 text-white whitespace-nowrap">Semua Status</button>
+        <button onclick="setTabFilter('PROSES')" id="tab-PROSES" class="tab-btn px-3.5 py-1.5 rounded-xl transition bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">⏳ Dalam Proses</button>
+        <button onclick="setTabFilter('MENUNGGU')" id="tab-MENUNGGU" class="tab-btn px-3.5 py-1.5 rounded-xl transition bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">📦 Menunggu Data</button>
+        <button onclick="setTabFilter('BONUS')" id="tab-BONUS" class="tab-btn px-3.5 py-1.5 rounded-xl transition bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">🎁 Dapat Bonus</button>
+        <button onclick="setTabFilter('SELESAI')" id="tab-SELESAI" class="tab-btn px-3.5 py-1.5 rounded-xl transition bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">✅ Selesai</button>
       </div>
 
-      <!-- List Container -->
-      <div id="dataCardList" class="space-y-3"></div>
+      <!-- Quick Category Chips -->
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-2 text-[11px] font-bold text-slate-500">
+        <span class="text-slate-400">Quick Filter:</span>
+        <button onclick="filterByProduct('')" class="chip-btn px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-purple-100 hover:text-brand-purple transition">Semua</button>
+        <button onclick="filterByProduct('netflix')" class="chip-btn px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-purple-100 hover:text-brand-purple transition">Netflix</button>
+        <button onclick="filterByProduct('canva')" class="chip-btn px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-purple-100 hover:text-brand-purple transition">Canva</button>
+        <button onclick="filterByProduct('spotify')" class="chip-btn px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-purple-100 hover:text-brand-purple transition">Spotify</button>
+        <button onclick="filterByProduct('youtube')" class="chip-btn px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-purple-100 hover:text-brand-purple transition">YouTube</button>
+      </div>
+
+      <!-- List Data Cards -->
+      <div id="dataCardList" class="space-y-3 pt-1"></div>
     </div>
   </div>
 
-  <!-- MODAL: Tambah Garansi & Bonus -->
+  <!-- MODAL MANUAL INPUT -->
   <div id="modalOverlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs hidden items-center justify-center p-4 z-50 transition-opacity">
-    <div class="bg-white rounded-3xl w-full max-w-lg p-6 shadow-2xl border border-slate-100 transform transition-all">
+    <div class="bg-white rounded-3xl w-full max-w-lg p-6 shadow-2xl border border-slate-100 transform transition-all animate-bounce-short">
       <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
         <div>
           <h4 class="font-black text-slate-900 text-lg">Input Garansi &amp; Bonus</h4>
-          <p class="text-xs text-slate-400">Tambahkan informasi klaim dan reminder bonus customer.</p>
+          <p class="text-xs text-slate-400">Tambahkan informasi klaim dan reminder bonus.</p>
         </div>
         <button onclick="closeModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 font-bold transition">
           ✕
         </button>
       </div>
 
-      <form id="addForm" onsubmit="handleFormSubmit(event)" class="space-y-3.5">
+      <form id="addForm" onsubmit="handleFormSubmit(event)" class="space-y-3.5 text-xs sm:text-sm">
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Nama Customer <span class="text-rose-500">*</span></label>
-          <input type="text" id="inputName" required placeholder="Contoh: Andi Pratama" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple outline-none">
+          <label class="block font-bold text-slate-700 mb-1">Nama Customer <span class="text-rose-500">*</span></label>
+          <input type="text" id="inputName" required placeholder="Contoh: Ryan Pratama" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 focus:border-brand-purple outline-none">
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">WhatsApp / No HP <span class="text-rose-500">*</span></label>
-            <input type="text" id="inputPhone" required placeholder="08xxxxxxxxxx" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple outline-none">
+            <label class="block font-bold text-slate-700 mb-1">WhatsApp / No HP <span class="text-rose-500">*</span></label>
+            <input type="text" id="inputPhone" required placeholder="08xxxxxxxxxx" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 focus:border-brand-purple outline-none">
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Produk / Layanan <span class="text-rose-500">*</span></label>
-            <input type="text" id="inputProduct" required placeholder="Contoh: Netflix 1 Bulan" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple outline-none">
+            <label class="block font-bold text-slate-700 mb-1">Produk / Layanan <span class="text-rose-500">*</span></label>
+            <input type="text" id="inputProduct" required placeholder="Contoh: Netflix 1P 4K" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 focus:border-brand-purple outline-none">
           </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Status Garansi</label>
-            <select id="inputStatus" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-semibold focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple outline-none">
+            <label class="block font-bold text-slate-700 mb-1">Status Garansi</label>
+            <select id="inputStatus" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 font-bold focus:border-brand-purple outline-none">
               <option value="Dalam Proses">⏳ Dalam Proses</option>
               <option value="Menunggu Data/Akun">📦 Menunggu Data / Akun</option>
               <option value="Selesai">✅ Selesai</option>
-              <option value="Tidak Ada Klaim">➖ Tidak Ada Klaim Garansi</option>
+              <option value="Tidak Ada Klaim">➖ Tanpa Garansi</option>
               <option value="Ditolak">❌ Ditolak / Hangus</option>
             </select>
           </div>
           <div>
-            <label class="block text-xs font-bold text-slate-700 mb-1">Target Selesai Garansi</label>
-            <input type="date" id="inputDueDate" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs font-medium focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple outline-none">
+            <label class="block font-bold text-slate-700 mb-1">Target Selesai Garansi</label>
+            <input type="date" id="inputDueDate" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 font-medium focus:border-brand-purple outline-none">
           </div>
         </div>
 
-        <!-- Toggle Bonus -->
-        <div class="bg-purple-50/70 border border-purple-100 rounded-2xl p-3.5 space-y-2.5">
+        <!-- Bonus Option -->
+        <div class="bg-purple-50/70 border border-purple-100 rounded-2xl p-4 space-y-3">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
-              <span class="text-base">🎁</span>
+              <span class="text-lg">🎁</span>
               <div>
-                <p class="text-xs font-bold text-slate-800">Dapat Bonus Customer?</p>
+                <p class="font-extrabold text-slate-800">Dapat Bonus Customer?</p>
                 <p class="text-[11px] text-slate-500">Berikan reward atau kompensasi garansi</p>
               </div>
             </div>
             <label class="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" id="inputHasBonus" onchange="toggleBonusField()" class="sr-only peer">
-              <div class="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-purple"></div>
+              <div class="w-10 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-purple"></div>
             </label>
           </div>
 
           <div id="bonusDetailContainer" class="hidden pt-1 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
             <div>
-              <label class="block text-[11px] font-bold text-brand-purpleDark mb-1">Rincian Bonus Apa?</label>
-              <input type="text" id="inputBonusDetail" placeholder="Misal: Tambah 3 Hari Aktif / Diskon 20%" class="w-full bg-white border border-purple-200 rounded-xl px-3 py-1.5 text-xs focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple outline-none">
+              <label class="block text-[11px] font-bold text-brand-purpleDark mb-1">Rincian Bonus</label>
+              <input type="text" id="inputBonusDetail" placeholder="Misal: Tambah +3 Hari Aktif" class="w-full bg-white border border-purple-200 rounded-xl px-3 py-2 focus:border-brand-purple outline-none">
             </div>
             <div>
-              <label class="block text-[11px] font-bold text-brand-purpleDark mb-1">Batas Expired / Klaim Bonus</label>
-              <input type="date" id="inputBonusDeadline" class="w-full bg-white border border-purple-200 rounded-xl px-3 py-1.5 text-xs focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple outline-none">
+              <label class="block text-[11px] font-bold text-brand-purpleDark mb-1">Batas Expired Bonus</label>
+              <input type="date" id="inputBonusDeadline" class="w-full bg-white border border-purple-200 rounded-xl px-3 py-2 focus:border-brand-purple outline-none">
             </div>
           </div>
         </div>
 
         <div>
-          <label class="block text-xs font-bold text-slate-700 mb-1">Catatan Kendala / Detail Klaim</label>
-          <textarea id="inputNotes" rows="2" placeholder="Akun mengalami screen limit / kendala password salah" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs focus:ring-2 focus:ring-brand-purple/20 focus:border-brand-purple outline-none"></textarea>
+          <label class="block font-bold text-slate-700 mb-1">Catatan Kendala / Detail Klaim</label>
+          <textarea id="inputNotes" rows="2" placeholder="Catatan perbaikan atau login akun..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 focus:border-brand-purple outline-none"></textarea>
         </div>
 
         <div class="pt-2">
-          <button type="submit" class="w-full neon-btn font-extrabold text-xs sm:text-sm py-3 rounded-xl shadow-md flex items-center justify-center gap-2">
-            <span>Simpan Data</span>
+          <button type="submit" class="w-full neon-btn font-extrabold py-3.5 rounded-2xl shadow-md flex items-center justify-center gap-2">
+            <span>Simpan Data Sekarang</span>
           </button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Notification Toast -->
-  <div id="toast" class="fixed bottom-6 right-6 z-50 bg-slate-900 text-white text-xs px-4 py-2.5 rounded-xl shadow-lg border border-slate-700 transition-all transform translate-y-20 opacity-0 pointer-events-none flex items-center gap-2">
-    <span id="toastMsg">Data berhasil diperbarui</span>
+  <!-- Floating Toast Interactive -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 bg-slate-900 text-white text-xs px-4 py-3 rounded-2xl shadow-xl border border-slate-700 transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none flex items-center gap-2.5">
+    <span id="toastIcon">⚡</span>
+    <span id="toastMsg" class="font-bold">Notifikasi sistem</span>
   </div>
 
   <script>
+    // Audio synthesizer Web Audio API (Tanpa butuh file MP3 eksternal)
+    function playAudioTone(type) {
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        if (type === 'success') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // D5
+          osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.15); // A5
+          gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.2);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.2);
+        } else if (type === 'pop') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.08);
+          gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.1);
+        }
+      } catch (e) {}
+    }
+
+    function triggerConfetti() {
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 60,
+          spread: 70,
+          origin: { y: 0.7 },
+          colors: ['#bef724', '#6d4df6', '#ff4d6d', '#38bdf8']
+        });
+      }
+    }
+
+    // Initial Sample Data Realistis
     const initialSampleData = [
       {
         id: 1730000000001,
@@ -334,7 +438,7 @@
         hasBonus: true,
         bonusDetail: "Free Akun Prime Video 1 Bulan",
         bonusDeadline: getFormattedDateOffset(2),
-        notes: "Tim sedang melakukan re-invite member baru."
+        notes: "Member re-invite sedang diproses."
       },
       {
         id: 1730000000002,
@@ -342,11 +446,11 @@
         phone: "085712349988",
         product: "YouTube Premium 4 Bulan",
         status: "Menunggu Data/Akun",
-        dueDate: getFormattedDateOffset(1), // H-1 (Besok)
+        dueDate: getFormattedDateOffset(1), // H-1
         hasBonus: false,
         bonusDetail: "",
         bonusDeadline: "",
-        notes: "Menunggu email akun dari customer."
+        notes: "Menunggu email akun baru dari customer."
       },
       {
         id: 1730000000003,
@@ -357,19 +461,30 @@
         dueDate: getFormattedDateOffset(-2),
         hasBonus: true,
         bonusDetail: "Voucher Diskon Rp 10.000",
-        bonusDeadline: getFormattedDateOffset(1), // Bonus mendekati H-1
-        notes: "Sudah di-invite kembali ke address baru."
+        bonusDeadline: getFormattedDateOffset(1),
+        notes: "Akun sudah aktif kembali."
       }
     ];
 
     let items = JSON.parse(localStorage.getItem('reztroid_garansi_records')) || initialSampleData;
     let currentTab = 'ALL';
     let currentReminderTab = 'warranty';
+    let currentProductFilter = '';
 
-    function getFormattedDateOffset(dayOffset) {
+    function getFormattedDateOffset(offset) {
       const d = new Date();
-      d.setDate(d.getDate() + dayOffset);
+      d.setDate(d.getDate() + offset);
       return d.toISOString().split('T')[0];
+    }
+
+    function showToast(msg, icon = '⚡') {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastIcon').innerText = icon;
+      document.getElementById('toastMsg').innerText = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+      }, 2500);
     }
 
     function saveState() {
@@ -379,24 +494,100 @@
       renderData();
     }
 
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      const toastMsg = document.getElementById('toastMsg');
-      toastMsg.innerText = msg;
-      toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+    function handleManualSync() {
+      const icon = document.getElementById('syncIcon');
+      icon.classList.add('animate-spin');
+      playAudioTone('pop');
       setTimeout(() => {
-        toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
-      }, 2500);
+        icon.classList.remove('animate-spin');
+        showToast("Sinkronisasi lokal berhasil!", "🔄");
+        calculateMetrics();
+        renderReminders();
+        renderData();
+      }, 400);
     }
 
-    function handleRefresh() {
-      showToast("🔄 Data dashboard disinkronkan");
-      calculateMetrics();
-      renderReminders();
-      renderData();
+    // ========================================================
+    // SMART PARSER (DRAG & DROP + CTRL/CMD + V PASTE)
+    // ========================================================
+    function parseAndAddText(rawText) {
+      if (!rawText || rawText.trim().length === 0) return;
+
+      let name = "";
+      let phone = "";
+      let product = "";
+      let notes = "";
+
+      const lines = rawText.split('\n');
+      for (let line of lines) {
+        const lower = line.toLowerCase();
+        if (lower.startsWith('nama:')) {
+          name = line.substring(5).trim();
+        } else if (lower.startsWith('no hp:') || lower.startsWith('hp:') || lower.startsWith('wa:') || lower.startsWith('whatsapp:')) {
+          phone = line.split(':')[1]?.trim() || "";
+        } else if (lower.startsWith('produk:') || lower.startsWith('layanan:')) {
+          product = line.split(':')[1]?.trim() || "";
+        } else if (lower.startsWith('kendala:') || lower.startsWith('catatan:') || lower.startsWith('detail:')) {
+          notes = line.split(':')[1]?.trim() || "";
+        }
+      }
+
+      if (!name && lines.length > 0) name = lines[0].replace(/[^a-zA-Z0-9\s]/g, '').trim();
+      if (!phone) {
+        const phoneMatch = rawText.match(/(08\d{8,12}|628\d{8,12})/);
+        if (phoneMatch) phone = phoneMatch[0];
+      }
+      if (!product) product = "Layanan Akun";
+      if (!notes) notes = rawText.slice(0, 100);
+
+      const newItem = {
+        id: Date.now(),
+        name: name || "Customer Baru",
+        phone: phone || "-",
+        product: product,
+        status: "Dalam Proses",
+        dueDate: getFormattedDateOffset(1), // Target H-1 otomatis
+        hasBonus: false,
+        bonusDetail: "",
+        bonusDeadline: "",
+        notes: notes || "Laporan masuk via drag/paste"
+      };
+
+      items.unshift(newItem);
+      saveState();
+      playAudioTone('success');
+      triggerConfetti();
+      showToast(`Auto-Input Berhasil: ${newItem.name}`, '🚀');
     }
 
+    const dropZone = document.getElementById('dropZone');
+
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('drop-active');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('drop-active');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('drop-active');
+      const text = e.dataTransfer.getData('text');
+      if (text) parseAndAddText(text);
+    });
+
+    // Global Paste (Ctrl+V / Cmd+V)
+    window.addEventListener('paste', (e) => {
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+      const pasted = (e.clipboardData || window.clipboardData).getData('text');
+      if (pasted) parseAndAddText(pasted);
+    });
+
+    // Modal Control
     function openModal() {
+      playAudioTone('pop');
       document.getElementById('modalOverlay').classList.remove('hidden');
       document.getElementById('modalOverlay').classList.add('flex');
       document.getElementById('inputDueDate').value = getFormattedDateOffset(0);
@@ -412,14 +603,14 @@
 
     function toggleBonusField() {
       const isChecked = document.getElementById('inputHasBonus').checked;
-      const container = document.getElementById('bonusDetailContainer');
+      const box = document.getElementById('bonusDetailContainer');
       if (isChecked) {
-        container.classList.remove('hidden');
-        container.classList.add('grid');
+        box.classList.remove('hidden');
+        box.classList.add('grid');
         document.getElementById('inputBonusDetail').focus();
       } else {
-        container.classList.add('hidden');
-        container.classList.remove('grid');
+        box.classList.add('hidden');
+        box.classList.remove('grid');
         document.getElementById('inputBonusDetail').value = '';
         document.getElementById('inputBonusDeadline').value = '';
       }
@@ -428,8 +619,6 @@
     function handleFormSubmit(e) {
       e.preventDefault();
       const hasBonus = document.getElementById('inputHasBonus').checked;
-      const bonusDetail = document.getElementById('inputBonusDetail').value.trim();
-
       const newItem = {
         id: Date.now(),
         name: document.getElementById('inputName').value.trim(),
@@ -438,7 +627,7 @@
         status: document.getElementById('inputStatus').value,
         dueDate: document.getElementById('inputDueDate').value,
         hasBonus: hasBonus,
-        bonusDetail: hasBonus ? (bonusDetail || "Bonus Reward") : "",
+        bonusDetail: hasBonus ? (document.getElementById('inputBonusDetail').value.trim() || "Bonus Loyalitas") : "",
         bonusDeadline: hasBonus ? document.getElementById('inputBonusDeadline').value : "",
         notes: document.getElementById('inputNotes').value.trim() || "-"
       };
@@ -446,26 +635,34 @@
       items.unshift(newItem);
       saveState();
       closeModal();
-      showToast("✅ Berhasil menambahkan catatan baru!");
+      playAudioTone('success');
+      showToast("Data klaim berhasil disimpan!", "✅");
     }
 
     function updateItemStatus(id, newStatus) {
       items = items.map(item => item.id === id ? { ...item, status: newStatus } : item);
       saveState();
-      showToast("Status garansi berhasil diubah");
+      if (newStatus === 'Selesai') {
+        triggerConfetti();
+        playAudioTone('success');
+      } else {
+        playAudioTone('pop');
+      }
+      showToast(`Status diubah ke: ${newStatus}`);
     }
 
     function deleteItem(id) {
       const item = items.find(i => i.id === id);
-      if (item && confirm(`Hapus catatan customer: ${item.name}?`)) {
+      if (item && confirm(`Hapus catatan: ${item.name}?`)) {
         items = items.filter(i => i.id !== id);
         saveState();
-        showToast("🗑️ Data berhasil dihapus");
+        playAudioTone('pop');
+        showToast("Catatan dihapus", "🗑️");
       }
     }
 
     function formatPhone(phone) {
-      let clean = phone.replace(/[^0-9]/g, '');
+      let clean = String(phone).replace(/[^0-9]/g, '');
       if (clean.startsWith('0')) clean = '62' + clean.slice(1);
       return clean;
     }
@@ -473,6 +670,7 @@
     function sendWarrantyWA(id) {
       const item = items.find(i => i.id === id);
       if (!item) return;
+      playAudioTone('pop');
       const text = `Halo Kak *${encodeURIComponent(item.name)}*, salam dari *reztroid*! 👋%0A%0AUpdate status klaim garansi untuk produk *${encodeURIComponent(item.product)}*:%0AStatus: *${encodeURIComponent(item.status)}*%0ACatatan: ${encodeURIComponent(item.notes)}%0A%0AInfo lebih lanjut bisa langsung balas chat ini ya kak! 🙏`;
       window.open(`https://wa.me/${formatPhone(item.phone)}?text=${text}`, '_blank');
     }
@@ -480,11 +678,13 @@
     function sendBonusWA(id) {
       const item = items.find(i => i.id === id);
       if (!item) return;
-      const text = `Halo Kak *${encodeURIComponent(item.name)}*, kabar baik dari *reztroid*! 🎁%0A%0AKamu memiliki bonus spesial untuk pesanan *${encodeURIComponent(item.product)}*:%0A✨ *${encodeURIComponent(item.bonusDetail)}*%0A${item.bonusDeadline ? `Batas Klaim/Aktif: *${encodeURIComponent(item.bonusDeadline)}*%0A` : ''}%0ASilakan konfirmasi ke admin ya kak sebelum expired. Terima kasih! ❤️`;
+      playAudioTone('pop');
+      const text = `Halo Kak *${encodeURIComponent(item.name)}*, kabar baik dari *reztroid*! 🎁%0A%0AKamu berhak klaim bonus pesanan *${encodeURIComponent(item.product)}*:%0A✨ *${encodeURIComponent(item.bonusDetail)}*%0A${item.bonusDeadline ? `Batas Klaim/Aktif: *${encodeURIComponent(item.bonusDeadline)}*%0A` : ''}%0ASilakan balas pesan ini ya kak untuk menggunakan bonusnya. Terima kasih! ❤️`;
       window.open(`https://wa.me/${formatPhone(item.phone)}?text=${text}`, '_blank');
     }
 
     function switchReminderTab(type) {
+      playAudioTone('pop');
       currentReminderTab = type;
       const wBtn = document.getElementById('remTabWarrantyBtn');
       const bBtn = document.getElementById('remTabBonusBtn');
@@ -492,13 +692,13 @@
       const bContainer = document.getElementById('bonusReminderContainer');
 
       if (type === 'warranty') {
-        wBtn.className = "px-3 py-1.5 rounded-lg bg-white text-brand-purple shadow-xs transition flex items-center gap-1.5";
-        bBtn.className = "px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5";
+        wBtn.className = "px-3.5 py-2 rounded-xl bg-white text-brand-purple shadow-sm transition flex items-center gap-1.5";
+        bBtn.className = "px-3.5 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5";
         wContainer.classList.remove('hidden');
         bContainer.classList.add('hidden');
       } else {
-        bBtn.className = "px-3 py-1.5 rounded-lg bg-white text-brand-purple shadow-xs transition flex items-center gap-1.5";
-        wBtn.className = "px-3 py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5";
+        bBtn.className = "px-3.5 py-2 rounded-xl bg-white text-brand-purple shadow-sm transition flex items-center gap-1.5";
+        wBtn.className = "px-3.5 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5";
         bContainer.classList.remove('hidden');
         wContainer.classList.add('hidden');
       }
@@ -522,13 +722,11 @@
       const today = getFormattedDateOffset(0);
       const tomorrow = getFormattedDateOffset(1);
 
-      // Filter Garansi
       const warrantyReminders = items.filter(i => {
         const isNotDone = i.status !== 'Selesai' && i.status !== 'Ditolak' && i.status !== 'Tidak Ada Klaim';
         return isNotDone && i.dueDate && (i.dueDate <= tomorrow);
       });
 
-      // Filter Bonus
       const bonusReminders = items.filter(i => {
         return i.hasBonus && i.bonusDeadline && (i.bonusDeadline <= tomorrow);
       });
@@ -538,43 +736,41 @@
       document.getElementById('activeReminderCountBadge').innerText = 
         currentReminderTab === 'warranty' ? warrantyReminders.length : bonusReminders.length;
 
-      // Render Garansi
       const wContainer = document.getElementById('warrantyReminderContainer');
       if (warrantyReminders.length === 0) {
         wContainer.innerHTML = `
-          <div class="bg-white rounded-2xl p-6 text-center border border-slate-150 shadow-xs">
-            <span class="text-3xl block mb-2">🎉</span>
-            <p class="text-xs font-bold text-slate-800">Semua Klaim Garansi Terkendali</p>
+          <div class="bg-slate-50/70 rounded-2xl p-6 text-center border border-dashed border-slate-200">
+            <span class="text-3xl block mb-1">🎉</span>
+            <p class="text-xs font-bold text-slate-800">Semua Klaim Terkendali Aman!</p>
             <p class="text-[11px] text-slate-400">Tidak ada garansi yang mendekati deadline hari ini atau H-1.</p>
           </div>
         `;
       } else {
         wContainer.innerHTML = warrantyReminders.map(item => {
           const isToday = item.dueDate <= today;
-          const tagText = isToday ? "🚨 HARI INI / LEWAT BATAS" : "⏳ TARGET BESOK (H-1)";
+          const tagText = isToday ? "🚨 HARI INI / LEWAT TARGET" : "⏳ TARGET BESOK (H-1)";
           const tagStyle = isToday ? "bg-rose-100 text-rose-700 border-rose-200" : "bg-amber-100 text-amber-700 border-amber-200";
 
           return `
-            <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 hover:border-purple-200 transition">
+            <div class="card-hover bg-white rounded-2xl p-4 border border-slate-150 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div class="flex items-start gap-3">
                 <div class="w-10 h-10 rounded-xl bg-purple-50 text-brand-purple flex items-center justify-center font-bold text-sm shrink-0">
                   ${item.name.charAt(0).toUpperCase()}
                 </div>
                 <div>
                   <div class="flex items-center gap-2 flex-wrap">
-                    <span class="font-bold text-sm text-slate-900">${item.name}</span>
-                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${tagStyle}">${tagText}</span>
+                    <span class="font-extrabold text-sm text-slate-900">${item.name}</span>
+                    <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${tagStyle}">${tagText}</span>
                     <span class="text-[10px] bg-slate-100 text-slate-600 font-semibold px-2 py-0.5 rounded-full">${item.status}</span>
                   </div>
-                  <p class="text-xs text-slate-500 mt-0.5">Produk: <span class="font-medium text-slate-700">${item.product}</span> • Kendala: <span class="italic text-slate-600">${item.notes}</span></p>
+                  <p class="text-xs text-slate-500 mt-1">Produk: <span class="font-bold text-slate-700">${item.product}</span> • Kendala: <span class="italic text-slate-600">${item.notes}</span></p>
                 </div>
               </div>
-
               <div class="flex items-center gap-2 self-end sm:self-center">
-                <button onclick="sendWarrantyWA(${item.id})" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs px-3 py-1.5 rounded-xl flex items-center gap-1.5 transition shadow-xs">
-                  <span>💬 Follow-Up Garansi</span>
+                <button onclick="sendWarrantyWA(${item.id})" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs px-3 py-1.5 rounded-xl flex items-center gap-1.5 transition shadow-xs hover:scale-105">
+                  <span>💬 WA Status</span>
                 </button>
-                <button onclick="updateItemStatus(${item.id}, 'Selesai')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-3 py-1.5 rounded-xl transition">
+                <button onclick="updateItemStatus(${item.id}, 'Selesai')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-3 py-1.5 rounded-xl transition hover:scale-105">
                   Selesaikan
                 </button>
               </div>
@@ -583,40 +779,36 @@
         }).join('');
       }
 
-      // Render Bonus
       const bContainer = document.getElementById('bonusReminderContainer');
       if (bonusReminders.length === 0) {
         bContainer.innerHTML = `
-          <div class="bg-white rounded-2xl p-6 text-center border border-slate-150 shadow-xs">
-            <span class="text-3xl block mb-2">✨</span>
+          <div class="bg-slate-50/70 rounded-2xl p-6 text-center border border-dashed border-slate-200">
+            <span class="text-3xl block mb-1">✨</span>
             <p class="text-xs font-bold text-slate-800">Tidak Ada Bonus Jatuh Tempo</p>
-            <p class="text-[11px] text-slate-400">Semua bonus loyalitas customer dalam masa aktif aman.</p>
+            <p class="text-[11px] text-slate-400">Semua bonus loyalitas pelanggan dalam batas aman.</p>
           </div>
         `;
       } else {
         bContainer.innerHTML = bonusReminders.map(item => {
           const isToday = item.bonusDeadline <= today;
-          const tagText = isToday ? "🎁 KLAIM HARI INI / HABIS" : "⏳ EXPIRED BESOK (H-1)";
+          const tagText = isToday ? "🎁 JATUH TEMPO HARI INI" : "⏳ EXPIRED BESOK (H-1)";
           const tagStyle = isToday ? "bg-purple-100 text-purple-700 border-purple-200" : "bg-lime-100 text-lime-900 border-lime-300";
 
           return `
-            <div class="bg-white rounded-2xl p-4 border border-slate-100 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 hover:border-purple-200 transition">
+            <div class="card-hover bg-white rounded-2xl p-4 border border-slate-150 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div class="flex items-start gap-3">
-                <div class="w-10 h-10 rounded-xl bg-lime-100 text-emerald-900 flex items-center justify-center font-bold text-sm shrink-0">
-                  🎁
-                </div>
+                <div class="w-10 h-10 rounded-xl bg-lime-100 text-emerald-900 flex items-center justify-center font-bold text-sm shrink-0">🎁</div>
                 <div>
                   <div class="flex items-center gap-2 flex-wrap">
-                    <span class="font-bold text-sm text-slate-900">${item.name}</span>
-                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${tagStyle}">${tagText}</span>
+                    <span class="font-extrabold text-sm text-slate-900">${item.name}</span>
+                    <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${tagStyle}">${tagText}</span>
                   </div>
-                  <p class="text-xs text-slate-600 font-semibold mt-0.5">Bonus: <span class="text-brand-purple">${item.bonusDetail}</span> (${item.product})</p>
+                  <p class="text-xs text-slate-600 font-semibold mt-1">Bonus: <span class="text-brand-purple font-bold">${item.bonusDetail}</span> (${item.product})</p>
                   <p class="text-[11px] text-slate-400">Batas Expired: ${item.bonusDeadline}</p>
                 </div>
               </div>
-
               <div class="flex items-center gap-2 self-end sm:self-center">
-                <button onclick="sendBonusWA(${item.id})" class="neon-btn font-bold text-xs px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 transition shadow-xs">
+                <button onclick="sendBonusWA(${item.id})" class="neon-btn font-extrabold text-xs px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 transition shadow-xs hover:scale-105">
                   <span>🎁 Bagikan Bonus via WA</span>
                 </button>
               </div>
@@ -627,17 +819,23 @@
     }
 
     function setTabFilter(tab) {
+      playAudioTone('pop');
       currentTab = tab;
       document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.classList.remove('bg-slate-900', 'text-white');
         btn.classList.add('bg-slate-100', 'text-slate-600');
       });
-
       const activeBtn = document.getElementById(`tab-${tab}`);
       if (activeBtn) {
         activeBtn.classList.remove('bg-slate-100', 'text-slate-600');
         activeBtn.classList.add('bg-slate-900', 'text-white');
       }
+      renderData();
+    }
+
+    function filterByProduct(keyword) {
+      playAudioTone('pop');
+      currentProductFilter = keyword.toLowerCase();
       renderData();
     }
 
@@ -648,9 +846,11 @@
       let filtered = items.filter(item => {
         const matchesQuery = item.name.toLowerCase().includes(query) ||
                              item.product.toLowerCase().includes(query) ||
-                             item.phone.includes(query);
+                             String(item.phone).includes(query);
 
         if (!matchesQuery) return false;
+        if (currentProductFilter && !item.product.toLowerCase().includes(currentProductFilter)) return false;
+
         if (currentTab === 'PROSES') return item.status === 'Dalam Proses';
         if (currentTab === 'MENUNGGU') return item.status === 'Menunggu Data/Akun';
         if (currentTab === 'SELESAI') return item.status === 'Selesai';
@@ -661,8 +861,9 @@
       if (filtered.length === 0) {
         container.innerHTML = `
           <div class="py-12 text-center text-slate-400">
-            <p class="text-sm font-semibold">Tidak ada data klaim atau bonus yang cocok.</p>
-            <p class="text-xs text-slate-400 mt-1">Gunakan tombol "+ Tambah Garansi / Bonus" untuk menambahkan data baru.</p>
+            <span class="text-3xl block mb-2">🔍</span>
+            <p class="text-sm font-bold text-slate-700">Tidak ada data klaim yang sesuai.</p>
+            <p class="text-xs text-slate-400 mt-0.5">Coba gunakan kata kunci lain atau bersihkan filter.</p>
           </div>
         `;
         return;
@@ -676,34 +877,28 @@
         if (item.status === 'Tidak Ada Klaim') badgeColor = "bg-slate-100 text-slate-600 border-slate-200";
 
         return `
-          <div class="border border-slate-150 rounded-2xl p-4 hover:border-slate-300 transition bg-white flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div class="card-hover border border-slate-150 rounded-2xl p-4 bg-white flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-2xs">
             <div class="space-y-1.5 flex-1">
               <div class="flex items-center gap-2 flex-wrap">
                 <span class="font-extrabold text-slate-900 text-sm">${item.name}</span>
                 <span class="text-xs text-slate-400 font-mono">(${item.phone})</span>
-                <span class="text-[11px] font-bold px-2 py-0.5 rounded-full border ${badgeColor}">
-                  ${item.status}
-                </span>
+                <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${badgeColor}">${item.status}</span>
                 ${item.hasBonus ? `
                   <span class="inline-flex items-center gap-1 text-[11px] font-black px-2.5 py-0.5 rounded-full bg-[#bef724]/30 text-emerald-950 border border-[#bef724]">
-                    🎁 Bonus: ${item.bonusDetail}${item.bonusDeadline ? `(s/d ${item.bonusDeadline})` : ''}
+                    🎁 Bonus: ${item.bonusDetail} ${item.bonusDeadline ? `(s/d ${item.bonusDeadline})` : ''}
                   </span>
                 ` : ''}
               </div>
-
               <div class="flex items-center gap-3 text-xs text-slate-600 flex-wrap">
-                <span class="font-semibold text-slate-800">📦 ${item.product}</span>
-                <span class="text-slate-400">•</span>
-                <span>📅 Target Garansi: <strong class="text-slate-700">${item.dueDate || '-'}</strong></span>
+                <span class="font-bold text-slate-800">📦 ${item.product}</span>
+                <span class="text-slate-300">•</span>
+                <span>📅 Target: <strong class="text-slate-700">${item.dueDate || '-'}</strong></span>
               </div>
-
-              <p class="text-xs text-slate-500 italic bg-slate-50 px-2.5 py-1 rounded-lg border border-slate-100 max-w-xl">
-                "${item.notes}"
-              </p>
+              <p class="text-xs text-slate-500 italic bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100 max-w-xl">"${item.notes}"</p>
             </div>
 
             <div class="flex items-center gap-2 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-slate-100">
-              <select onchange="updateItemStatus(${item.id}, this.value)" class="text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-slate-700 outline-none focus:border-brand-purple">
+              <select onchange="updateItemStatus(${item.id}, this.value)" class="text-xs font-bold bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-slate-700 outline-none focus:border-brand-purple cursor-pointer">
                 <option value="Dalam Proses" ${item.status === 'Dalam Proses' ? 'selected' : ''}>⏳ Dalam Proses</option>
                 <option value="Menunggu Data/Akun" ${item.status === 'Menunggu Data/Akun' ? 'selected' : ''}>📦 Menunggu Data</option>
                 <option value="Selesai" ${item.status === 'Selesai' ? 'selected' : ''}>✅ Selesai</option>
@@ -711,19 +906,19 @@
                 <option value="Ditolak" ${item.status === 'Ditolak' ? 'selected' : ''}>❌ Ditolak</option>
               </select>
 
-              <button onclick="sendWarrantyWA(${item.id})" title="Follow-up Status Garansi via WA" class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 flex items-center justify-center transition">
+              <button onclick="sendWarrantyWA(${item.id})" title="Kirim WA Garansi" class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 flex items-center justify-center transition hover:scale-110">
                 <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
                   <path d="M12.031 2C6.495 2 2 6.492 2 12.028c0 1.944.555 3.766 1.516 5.308L2 22l4.82-1.469a9.98 9.98 0 005.211 1.497h.004c5.536 0 10.031-4.492 10.031-10.028 0-2.678-1.043-5.197-2.937-7.091A9.972 9.972 0 0012.031 2zm0 18.258h-.003a8.27 8.27 0 01-4.223-1.156l-.303-.18-3.138.958.976-3.056-.197-.314a8.275 8.275 0 01-1.272-4.482c0-4.568 3.717-8.285 8.288-8.285 2.213 0 4.293.863 5.858 2.428a8.232 8.232 0 012.425 5.857c0 4.568-3.717 8.285-8.286 8.285z"/>
                 </svg>
               </button>
 
               ${item.hasBonus ? `
-                <button onclick="sendBonusWA(${item.id})" title="Kirim Info Bonus via WA" class="w-8 h-8 rounded-xl bg-purple-50 text-brand-purple hover:bg-purple-100 flex items-center justify-center transition text-xs font-bold">
+                <button onclick="sendBonusWA(${item.id})" title="Kirim WA Bonus" class="w-8 h-8 rounded-xl bg-purple-50 text-brand-purple hover:bg-purple-100 flex items-center justify-center transition text-xs font-bold hover:scale-110">
                   🎁
                 </button>
               ` : ''}
 
-              <button onclick="deleteItem(${item.id})" title="Hapus" class="w-8 h-8 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-100 flex items-center justify-center transition">
+              <button onclick="deleteItem(${item.id})" title="Hapus" class="w-8 h-8 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-100 flex items-center justify-center transition hover:scale-110">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                 </svg>
