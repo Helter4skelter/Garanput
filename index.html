@@ -392,3 +392,531 @@
           osc.start();
           osc.stop(audioCtx.currentTime + 0.2);
         } else if (type === 'pop') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.08);
+          gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+          osc.start();
+          osc.stop(audioCtx.currentTime + 0.1);
+        }
+      } catch (e) {}
+    }
+
+    function triggerConfetti() {
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 60,
+          spread: 70,
+          origin: { y: 0.7 },
+          colors: ['#bef724', '#6d4df6', '#ff4d6d', '#38bdf8']
+        });
+      }
+    }
+
+    const initialSampleData = [
+      {
+        id: 1730000000001,
+        name: "Kevin Sanjaya",
+        phone: "081234567890",
+        product: "Canva Pro 1 Tahun",
+        status: "Dalam Proses",
+        dueDate: getFormattedDateOffset(0),
+        hasBonus: true,
+        bonusDetail: "Free Akun Prime Video 1 Bulan",
+        bonusDeadline: getFormattedDateOffset(2),
+        notes: "Member re-invite sedang diproses."
+      },
+      {
+        id: 1730000000002,
+        name: "Siti Rahmawati",
+        phone: "085712349988",
+        product: "YouTube Premium 4 Bulan",
+        status: "Menunggu Data/Akun",
+        dueDate: getFormattedDateOffset(1),
+        hasBonus: false,
+        bonusDetail: "",
+        bonusDeadline: "",
+        notes: "Menunggu email akun baru dari customer."
+      },
+      {
+        id: 1730000000003,
+        name: "Farhan Maulana",
+        phone: "087899001122",
+        product: "Spotify Family Member",
+        status: "Selesai",
+        dueDate: getFormattedDateOffset(-2),
+        hasBonus: true,
+        bonusDetail: "Voucher Diskon Rp 10.000",
+        bonusDeadline: getFormattedDateOffset(1),
+        notes: "Akun sudah aktif kembali."
+      }
+    ];
+
+    let items = JSON.parse(localStorage.getItem('reztroid_garansi_records')) || initialSampleData;
+    let currentTab = 'ALL';
+    let currentReminderTab = 'warranty';
+    let currentProductFilter = '';
+
+    function getFormattedDateOffset(offset) {
+      const d = new Date();
+      d.setDate(d.getDate() + offset);
+      return d.toISOString().split('T')[0];
+    }
+
+    function showToast(msg, icon = '⚡') {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastIcon').innerText = icon;
+      document.getElementById('toastMsg').innerText = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+      }, 2500);
+    }
+
+    function saveState() {
+      localStorage.setItem('reztroid_garansi_records', JSON.stringify(items));
+      calculateMetrics();
+      renderReminders();
+      renderData();
+    }
+
+    function handleManualSync() {
+      const icon = document.getElementById('syncIcon');
+      icon.classList.add('animate-spin');
+      playAudioTone('pop');
+      setTimeout(() => {
+        icon.classList.remove('animate-spin');
+        showToast("Sinkronisasi lokal berhasil!", "🔄");
+        calculateMetrics();
+        renderReminders();
+        renderData();
+      }, 400);
+    }
+
+    // ========================================================
+    // SMART PARSER: AUTO-FILL KE MODAL EDIT TERLEBIH DAHULU
+    // ========================================================
+    function parseAndAddText(rawText) {
+      if (!rawText || rawText.trim().length === 0) return;
+
+      let name = "";
+      let phone = "";
+      let product = "";
+      let notes = "";
+
+      const lines = rawText.split('\n');
+      for (let line of lines) {
+        const lower = line.toLowerCase();
+        if (lower.startsWith('nama:')) {
+          name = line.substring(5).trim();
+        } else if (lower.startsWith('no hp:') || lower.startsWith('hp:') || lower.startsWith('wa:') || lower.startsWith('whatsapp:')) {
+          phone = line.split(':')[1]?.trim() || "";
+        } else if (lower.startsWith('produk:') || lower.startsWith('layanan:')) {
+          product = line.split(':')[1]?.trim() || "";
+        } else if (lower.startsWith('kendala:') || lower.startsWith('catatan:') || lower.startsWith('detail:')) {
+          notes = line.split(':')[1]?.trim() || "";
+        }
+      }
+
+      if (!name && lines.length > 0) name = lines[0].replace(/[^a-zA-Z0-9\s]/g, '').trim();
+      if (!phone) {
+        const phoneMatch = rawText.match(/(08\d{8,12}|628\d{8,12})/);
+        if (phoneMatch) phone = phoneMatch[0];
+      }
+      if (!product) product = "Layanan Akun";
+      if (!notes) notes = rawText.slice(0, 150);
+
+      // Buka modal secara otomatis dan isi form dengan data yang berhasil di-parse
+      openModal();
+      document.getElementById('inputName').value = name;
+      document.getElementById('inputPhone').value = phone;
+      document.getElementById('inputProduct').value = product;
+      document.getElementById('inputNotes').value = notes;
+      document.getElementById('inputStatus').value = "Dalam Proses";
+      document.getElementById('inputDueDate').value = getFormattedDateOffset(1);
+
+      playAudioTone('pop');
+      showToast("Data terbaca! Silakan periksa atau sesuaikan sebelum disimpan.", "📝");
+    }
+
+    const dropZone = document.getElementById('dropZone');
+
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('drop-active');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('drop-active');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('drop-active');
+      const text = e.dataTransfer.getData('text');
+      if (text) parseAndAddText(text);
+    });
+
+    window.addEventListener('paste', (e) => {
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+      const pasted = (e.clipboardData || window.clipboardData).getData('text');
+      if (pasted) parseAndAddText(pasted);
+    });
+
+    function openModal() {
+      playAudioTone('pop');
+      document.getElementById('modalOverlay').classList.remove('hidden');
+      document.getElementById('modalOverlay').classList.add('flex');
+      if (!document.getElementById('inputDueDate').value) {
+        document.getElementById('inputDueDate').value = getFormattedDateOffset(0);
+      }
+      if (!document.getElementById('inputBonusDeadline').value) {
+        document.getElementById('inputBonusDeadline').value = getFormattedDateOffset(3);
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.add('hidden');
+      document.getElementById('modalOverlay').classList.remove('flex');
+      document.getElementById('addForm').reset();
+      document.getElementById('bonusDetailContainer').classList.add('hidden');
+    }
+
+    function toggleBonusField() {
+      const isChecked = document.getElementById('inputHasBonus').checked;
+      const box = document.getElementById('bonusDetailContainer');
+      if (isChecked) {
+        box.classList.remove('hidden');
+        box.classList.add('grid');
+        document.getElementById('inputBonusDetail').focus();
+      } else {
+        box.classList.add('hidden');
+        box.classList.remove('grid');
+        document.getElementById('inputBonusDetail').value = '';
+        document.getElementById('inputBonusDeadline').value = '';
+      }
+    }
+
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const hasBonus = document.getElementById('inputHasBonus').checked;
+      const newItem = {
+        id: Date.now(),
+        name: document.getElementById('inputName').value.trim(),
+        phone: document.getElementById('inputPhone').value.trim(),
+        product: document.getElementById('inputProduct').value.trim(),
+        status: document.getElementById('inputStatus').value,
+        dueDate: document.getElementById('inputDueDate').value,
+        hasBonus: hasBonus,
+        bonusDetail: hasBonus ? (document.getElementById('inputBonusDetail').value.trim() || "Bonus Loyalitas") : "",
+        bonusDeadline: hasBonus ? document.getElementById('inputBonusDeadline').value : "",
+        notes: document.getElementById('inputNotes').value.trim() || "-"
+      };
+
+      items.unshift(newItem);
+      saveState();
+      closeModal();
+      playAudioTone('success');
+      triggerConfetti();
+      showToast("Data klaim berhasil disimpan!", "✅");
+    }
+
+    function updateItemStatus(id, newStatus) {
+      items = items.map(item => item.id === id ? { ...item, status: newStatus } : item);
+      saveState();
+      if (newStatus === 'Selesai') {
+        triggerConfetti();
+        playAudioTone('success');
+      } else {
+        playAudioTone('pop');
+      }
+      showToast(`Status diubah ke: ${newStatus}`);
+    }
+
+    function deleteItem(id) {
+      const item = items.find(i => i.id === id);
+      if (item && confirm(`Hapus catatan: ${item.name}?`)) {
+        items = items.filter(i => i.id !== id);
+        saveState();
+        playAudioTone('pop');
+        showToast("Catatan dihapus", "🗑️");
+      }
+    }
+
+    function formatPhone(phone) {
+      let clean = String(phone).replace(/[^0-9]/g, '');
+      if (clean.startsWith('0')) clean = '62' + clean.slice(1);
+      return clean;
+    }
+
+    function sendWarrantyWA(id) {
+      const item = items.find(i => i.id === id);
+      if (!item) return;
+      playAudioTone('pop');
+      const text = `Halo Kak *${encodeURIComponent(item.name)}*, salam dari *reztroid*! 👋%0A%0AUpdate status klaim garansi untuk produk *${encodeURIComponent(item.product)}*:%0AStatus: *${encodeURIComponent(item.status)}*%0ACatatan: ${encodeURIComponent(item.notes)}%0A%0AInfo lebih lanjut bisa langsung balas chat ini ya kak! 🙏`;
+      window.open(`https://wa.me/${formatPhone(item.phone)}?text=${text}`, '_blank');
+    }
+
+    function sendBonusWA(id) {
+      const item = items.find(i => i.id === id);
+      if (!item) return;
+      playAudioTone('pop');
+      const text = `Halo Kak *${encodeURIComponent(item.name)}*, kabar baik dari *reztroid*! 🎁%0A%0AKamu berhak klaim bonus pesanan *${encodeURIComponent(item.product)}*:%0A✨ *${encodeURIComponent(item.bonusDetail)}*%0A${item.bonusDeadline ? `Batas Klaim/Aktif: *${encodeURIComponent(item.bonusDeadline)}*%0A` : ''}%0ASilakan balas pesan ini ya kak untuk menggunakan bonusnya. Terima kasih! ❤️`;
+      window.open(`https://wa.me/${formatPhone(item.phone)}?text=${text}`, '_blank');
+    }
+
+    function switchReminderTab(type) {
+      playAudioTone('pop');
+      currentReminderTab = type;
+      const wBtn = document.getElementById('remTabWarrantyBtn');
+      const bBtn = document.getElementById('remTabBonusBtn');
+      const wContainer = document.getElementById('warrantyReminderContainer');
+      const bContainer = document.getElementById('bonusReminderContainer');
+
+      if (type === 'warranty') {
+        wBtn.className = "px-3.5 py-2 rounded-xl bg-white text-brand-purple shadow-sm transition flex items-center gap-1.5";
+        bBtn.className = "px-3.5 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5";
+        wContainer.classList.remove('hidden');
+        bContainer.classList.add('hidden');
+      } else {
+        bBtn.className = "px-3.5 py-2 rounded-xl bg-white text-brand-purple shadow-sm transition flex items-center gap-1.5";
+        wBtn.className = "px-3.5 py-2 rounded-xl text-slate-600 hover:text-slate-900 transition flex items-center gap-1.5";
+        bContainer.classList.remove('hidden');
+        wContainer.classList.add('hidden');
+      }
+      renderReminders();
+    }
+
+    function calculateMetrics() {
+      const inProcess = items.filter(i => i.status === 'Dalam Proses').length;
+      const done = items.filter(i => i.status === 'Selesai').length;
+      const bonusCount = items.filter(i => i.hasBonus).length;
+      const today = getFormattedDateOffset(0);
+      const urgent = items.filter(i => (i.status === 'Dalam Proses' || i.status === 'Menunggu Data/Akun') && i.dueDate && i.dueDate <= today).length;
+
+      document.getElementById('statInProcess').innerText = inProcess;
+      document.getElementById('statUrgent').innerText = urgent;
+      document.getElementById('statBonusCount').innerText = bonusCount;
+      document.getElementById('statDone').innerText = done;
+    }
+
+    function renderReminders() {
+      const today = getFormattedDateOffset(0);
+      const tomorrow = getFormattedDateOffset(1);
+
+      const warrantyReminders = items.filter(i => {
+        const isNotDone = i.status !== 'Selesai' && i.status !== 'Ditolak' && i.status !== 'Tidak Ada Klaim';
+        return isNotDone && i.dueDate && (i.dueDate <= tomorrow);
+      });
+
+      const bonusReminders = items.filter(i => {
+        return i.hasBonus && i.bonusDeadline && (i.bonusDeadline <= tomorrow);
+      });
+
+      document.getElementById('wCount').innerText = warrantyReminders.length;
+      document.getElementById('bCount').innerText = bonusReminders.length;
+      document.getElementById('activeReminderCountBadge').innerText = 
+        currentReminderTab === 'warranty' ? warrantyReminders.length : bonusReminders.length;
+
+      const wContainer = document.getElementById('warrantyReminderContainer');
+      if (warrantyReminders.length === 0) {
+        wContainer.innerHTML = `
+          <div class="bg-slate-50/70 rounded-2xl p-6 text-center border border-dashed border-slate-200">
+            <span class="text-3xl block mb-1">🎉</span>
+            <p class="text-xs font-bold text-slate-800">Semua Klaim Terkendali Aman!</p>
+            <p class="text-[11px] text-slate-400">Tidak ada garansi yang mendekati deadline hari ini atau H-1.</p>
+          </div>
+        `;
+      } else {
+        wContainer.innerHTML = warrantyReminders.map(item => {
+          const isToday = item.dueDate <= today;
+          const tagText = isToday ? "🚨 HARI INI / LEWAT TARGET" : "⏳ TARGET BESOK (H-1)";
+          const tagStyle = isToday ? "bg-rose-100 text-rose-700 border-rose-200" : "bg-amber-100 text-amber-700 border-amber-200";
+
+          return `
+            <div class="card-hover bg-white rounded-2xl p-4 border border-slate-150 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div class="flex items-start gap-3">
+                <div class="w-10 h-10 rounded-xl bg-purple-50 text-brand-purple flex items-center justify-center font-bold text-sm shrink-0">
+                  ${item.name.charAt(0).toUpperCase()}
+                </div>
+                <div>
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class="font-extrabold text-sm text-slate-900">${item.name}</span>
+                    <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${tagStyle}">${tagText}</span>
+                    <span class="text-[10px] bg-slate-100 text-slate-600 font-semibold px-2 py-0.5 rounded-full">${item.status}</span>
+                  </div>
+                  <p class="text-xs text-slate-500 mt-1">Produk: <span class="font-bold text-slate-700">${item.product}</span> • Kendala: <span class="italic text-slate-600">${item.notes}</span></p>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 self-end sm:self-center">
+                <button onclick="sendWarrantyWA(${item.id})" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs px-3 py-1.5 rounded-xl flex items-center gap-1.5 transition shadow-xs hover:scale-105">
+                  <span>💬 WA Status</span>
+                </button>
+                <button onclick="updateItemStatus(${item.id}, 'Selesai')" class="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs px-3 py-1.5 rounded-xl transition hover:scale-105">
+                  Selesaikan
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      const bContainer = document.getElementById('bonusReminderContainer');
+      if (bonusReminders.length === 0) {
+        bContainer.innerHTML = `
+          <div class="bg-slate-50/70 rounded-2xl p-6 text-center border border-dashed border-slate-200">
+            <span class="text-3xl block mb-1">✨</span>
+            <p class="text-xs font-bold text-slate-800">Tidak Ada Bonus Jatuh Tempo</p>
+            <p class="text-[11px] text-slate-400">Semua bonus loyalitas pelanggan dalam batas aman.</p>
+          </div>
+        `;
+      } else {
+        bContainer.innerHTML = bonusReminders.map(item => {
+          const isToday = item.bonusDeadline <= today;
+          const tagText = isToday ? "🎁 JATUH TEMPO HARI INI" : "⏳ EXPIRED BESOK (H-1)";
+          const tagStyle = isToday ? "bg-purple-100 text-purple-700 border-purple-200" : "bg-lime-100 text-lime-900 border-lime-300";
+
+          return `
+            <div class="card-hover bg-white rounded-2xl p-4 border border-slate-150 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div class="flex items-start gap-3">
+                <div class="w-10 h-10 rounded-xl bg-lime-100 text-emerald-900 flex items-center justify-center font-bold text-sm shrink-0">🎁</div>
+                <div>
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class="font-extrabold text-sm text-slate-900">${item.name}</span>
+                    <span class="text-[10px] font-bold px-2.5 py-0.5 rounded-full border ${tagStyle}">${tagText}</span>
+                  </div>
+                  <p class="text-xs text-slate-600 font-semibold mt-1">Bonus: <span class="text-brand-purple font-bold">${item.bonusDetail}</span> (${item.product})</p>
+                  <p class="text-[11px] text-slate-400">Batas Expired: ${item.bonusDeadline}</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 self-end sm:self-center">
+                <button onclick="sendBonusWA(${item.id})" class="neon-btn font-extrabold text-xs px-3.5 py-1.5 rounded-xl flex items-center gap-1.5 transition shadow-xs hover:scale-105">
+                  <span>🎁 Bagikan Bonus via WA</span>
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
+
+    function setTabFilter(tab) {
+      playAudioTone('pop');
+      currentTab = tab;
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-slate-900', 'text-white');
+        btn.classList.add('bg-slate-100', 'text-slate-600');
+      });
+      const activeBtn = document.getElementById(`tab-${tab}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-slate-100', 'text-slate-600');
+        activeBtn.classList.add('bg-slate-900', 'text-white');
+      }
+      renderData();
+    }
+
+    function filterByProduct(keyword) {
+      playAudioTone('pop');
+      currentProductFilter = keyword.toLowerCase();
+      renderData();
+    }
+
+    function renderData() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const container = document.getElementById('dataCardList');
+
+      let filtered = items.filter(item => {
+        const matchesQuery = item.name.toLowerCase().includes(query) ||
+                             item.product.toLowerCase().includes(query) ||
+                             String(item.phone).includes(query);
+
+        if (!matchesQuery) return false;
+        if (currentProductFilter && !item.product.toLowerCase().includes(currentProductFilter)) return false;
+
+        if (currentTab === 'PROSES') return item.status === 'Dalam Proses';
+        if (currentTab === 'MENUNGGU') return item.status === 'Menunggu Data/Akun';
+        if (currentTab === 'SELESAI') return item.status === 'Selesai';
+        if (currentTab === 'BONUS') return item.hasBonus === true;
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="py-12 text-center text-slate-400">
+            <span class="text-3xl block mb-2">🔍</span>
+            <p class="text-sm font-bold text-slate-700">Tidak ada data klaim yang sesuai.</p>
+            <p class="text-xs text-slate-400 mt-0.5">Coba gunakan kata kunci lain atau bersihkan filter.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(item => {
+        let badgeColor = "bg-blue-50 text-blue-700 border-blue-200";
+        if (item.status === 'Selesai') badgeColor = "bg-emerald-50 text-emerald-700 border-emerald-200";
+        if (item.status === 'Menunggu Data/Akun') badgeColor = "bg-amber-50 text-amber-700 border-amber-200";
+        if (item.status === 'Ditolak') badgeColor = "bg-rose-50 text-rose-700 border-rose-200";
+        if (item.status === 'Tidak Ada Klaim') badgeColor = "bg-slate-100 text-slate-600 border-slate-200";
+
+        return `
+          <div class="card-hover border border-slate-150 rounded-2xl p-4 bg-white flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-2xs">
+            <div class="space-y-1.5 flex-1">
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="font-extrabold text-slate-900 text-sm">${item.name}</span>
+                <span class="text-xs text-slate-400 font-mono">(${item.phone})</span>
+                <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${badgeColor}">${item.status}</span>
+                ${item.hasBonus ? `
+                  <span class="inline-flex items-center gap-1 text-[11px] font-black px-2.5 py-0.5 rounded-full bg-[#bef724]/30 text-emerald-950 border border-[#bef724]">
+                    🎁 Bonus: ${item.bonusDetail} ${item.bonusDeadline ? `(s/d ${item.bonusDeadline})` : ''}
+                  </span>
+                ` : ''}
+              </div>
+              <div class="flex items-center gap-3 text-xs text-slate-600 flex-wrap">
+                <span class="font-bold text-slate-800">📦 ${item.product}</span>
+                <span class="text-slate-300">•</span>
+                <span>📅 Target: <strong class="text-slate-700">${item.dueDate || '-'}</strong></span>
+              </div>
+              <p class="text-xs text-slate-500 italic bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100 max-w-xl">"${item.notes}"</p>
+            </div>
+
+            <div class="flex items-center gap-2 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-slate-100">
+              <select onchange="updateItemStatus(${item.id}, this.value)" class="text-xs font-bold bg-slate-50 border border-slate-200 rounded-xl px-2.5 py-1.5 text-slate-700 outline-none focus:border-brand-purple cursor-pointer">
+                <option value="Dalam Proses" ${item.status === 'Dalam Proses' ? 'selected' : ''}>⏳ Dalam Proses</option>
+                <option value="Menunggu Data/Akun" ${item.status === 'Menunggu Data/Akun' ? 'selected' : ''}>📦 Menunggu Data</option>
+                <option value="Selesai" ${item.status === 'Selesai' ? 'selected' : ''}>✅ Selesai</option>
+                <option value="Tidak Ada Klaim" ${item.status === 'Tidak Ada Klaim' ? 'selected' : ''}>➖ Tanpa Garansi</option>
+                <option value="Ditolak" ${item.status === 'Ditolak' ? 'selected' : ''}>❌ Ditolak</option>
+              </select>
+
+              <button onclick="sendWarrantyWA(${item.id})" title="Kirim WA Garansi" class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-100 flex items-center justify-center transition hover:scale-110">
+                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                  <path d="M12.031 2C6.495 2 2 6.492 2 12.028c0 1.944.555 3.766 1.516 5.308L2 22l4.82-1.469a9.98 9.98 0 005.211 1.497h.004c5.536 0 10.031-4.492 10.031-10.028 0-2.678-1.043-5.197-2.937-7.091A9.972 9.972 0 0012.031 2zm0 18.258h-.003a8.27 8.27 0 01-4.223-1.156l-.303-.18-3.138.958.976-3.056-.197-.314a8.275 8.275 0 01-1.272-4.482c0-4.568 3.717-8.285 8.288-8.285 2.213 0 4.293.863 5.858 2.428a8.232 8.232 0 012.425 5.857c0 4.568-3.717 8.285-8.286 8.285z"/>
+                </svg>
+              </button>
+
+              ${item.hasBonus ? `
+                <button onclick="sendBonusWA(${item.id})" title="Kirim WA Bonus" class="w-8 h-8 rounded-xl bg-purple-50 text-brand-purple hover:bg-purple-100 flex items-center justify-center transition text-xs font-bold hover:scale-110">
+                  🎁
+                </button>
+              ` : ''}
+
+              <button onclick="deleteItem(${item.id})" title="Hapus" class="w-8 h-8 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-100 flex items-center justify-center transition hover:scale-110">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    window.onload = function() {
+      calculateMetrics();
+      renderReminders();
+      renderData();
+    };
+  </script>
+</body>
+</html>
